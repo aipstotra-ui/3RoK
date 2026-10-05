@@ -1,0 +1,33 @@
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.hypothesis/
+*.egg-info/
+dist/
+build/
+
+# JavaScript / TypeScript
+node_modules/
+.pnpm-store/
+coverage/
+*.tsbuildinfo
+
+# Data downloaded by `orbitlife data fetch` (published as GitHub Releases, never committed)
+data-cache/
+*.parquet
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Editors
+.vscode/
+.idea/

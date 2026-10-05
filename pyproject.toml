@@ -1,0 +1,40 @@
+# Root of the Python workspace. It is not a package itself; it groups the packages
+# under packages/py/ so `uv sync` installs them together, and holds shared tool settings.
+[project]
+name = "orbitlife-workspace"
+version = "0.0.0"
+requires-python = ">=3.11"
+dependencies = ["orbitlife", "orbitlife-build"]
+
+[tool.uv]
+package = false
+
+[tool.uv.workspace]
+members = ["packages/py/*"]
+
+[tool.uv.sources]
+orbitlife = { workspace = true }
+orbitlife-build = { workspace = true }
+
+[dependency-groups]
+dev = [
+    "pytest>=8",
+    "hypothesis>=6",
+    "ruff>=0.6",
+    "mypy>=1.11",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "RUF"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["packages/py"]
+addopts = "-q --import-mode=importlib"

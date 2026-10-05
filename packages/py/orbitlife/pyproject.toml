@@ -1,0 +1,25 @@
+[project]
+name = "orbitlife"
+version = "0.0.0"
+description = "How long will an AI chip last in orbit? Radiation, drag, thermal and space-weather models with sourced, validated numbers."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [{ name = "Aiden Park" }]
+keywords = ["space weather", "radiation", "orbit", "single event effects", "satellite", "reliability"]
+classifiers = [
+    "Development Status :: 1 - Planning",
+    "Intended Audience :: Science/Research",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Astronomy",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/aipstotra-ui/3RoK"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"

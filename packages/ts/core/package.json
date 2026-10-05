@@ -1,0 +1,31 @@
+{
+  "name": "@orbitlife/core",
+  "version": "0.0.0",
+  "description": "Browser and Node runtime for orbitlife: grid lookups, orbit geometry and forecast inference.",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aipstotra-ui/3RoK",
+    "directory": "packages/ts/core"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.3"
+  }
+}
