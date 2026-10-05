@@ -1,7 +1,7 @@
 {
   "name": "@orbitlife/core",
   "version": "0.0.0",
-  "description": "Browser and Node runtime for orbitlife: grid lookups, orbit geometry and forecast inference.",
+  "description": "Planned browser and Node runtime for orbitlife (grid lookups, orbit geometry, forecast inference). Pre-alpha: no functionality yet.",
   "license": "MIT",
   "type": "module",
   "repository": {

@@ -1,7 +1,7 @@
 [project]
 name = "orbitlife"
 version = "0.0.0"
-description = "How long will an AI chip last in orbit? Radiation, drag, thermal and space-weather models with sourced, validated numbers."
+description = "How long will an AI chip last in orbit? Planned radiation, drag, thermal and space-weather models with sourced uncertainty. Pre-alpha: no models yet."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.11"
