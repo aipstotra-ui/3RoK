@@ -28,3 +28,9 @@ fmt:
     uv run ruff format .
     uv run ruff check --fix .
     pnpm exec biome check --write .
+
+# Download a data release from GitHub and check every sha256 (ADR 0005). Example: just data-verify data-v0
+data-verify release:
+    rm -rf data-cache/{{release}}
+    gh release download {{release}} -D data-cache/{{release}}
+    uv run python -m orbitlife_build.manifest verify data-cache/{{release}}/manifest.json data-cache/{{release}}
