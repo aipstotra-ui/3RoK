@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use orbitlife in your work, please cite it as below."
+title: "orbitlife: survivability of AI compute in low Earth orbit"
+type: software
+authors:
+  - family-names: Park
+    given-names: Aiden
+repository-code: "https://github.com/aipstotra-ui/3RoK"
+license: MIT
+version: 0.0.0
+date-released: 2026-10-05
+keywords:
+  - space weather
+  - radiation effects
+  - single event effects
+  - orbital lifetime
+  - satellite reliability
