@@ -155,7 +155,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
 
 ### Phase 0: Foundations and agents
 - **Name:** `orbitlife` (chosen 2026-10-05; free on PyPI and npm).
-- **Repo:** replace 3RoK's stale commit with the scaffold. This is a force-push, which I'll confirm with you first.
+- **Repo:** the old 3RoK repo was deleted and recreated empty (Aiden, 2026-10-05); the scaffold is the first history.
 - **Tooling:**
   - uv and pnpm workspaces, plus `just`.
   - GitHub Actions jobs:
@@ -169,7 +169,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - Write ADRs for: frames/time library, units, schema generation, the visualization engine (CesiumJS), data hosting.
 - **Data and packages:**
   - Publish the old data as `data-v0`.
-  - Reserve the name with 0.0.0 placeholder releases.
+  - Name reservation on PyPI and npm moved to Phase 7 (Aiden, 2026-10-05): GitHub alone is enough until release.
 - **Exit:**
   - CI is green on empty packages.
   - Each agent runs on a dummy PR and returns its table format.
@@ -305,7 +305,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
 
 ### Phase 7: Release 1.0 and outreach
 - **Publishing:**
-  - PyPI and npm via trusted publishing.
+  - Create PyPI and npm accounts (Aiden), check `orbitlife` is still free, then publish via trusted publishing.
   - Docs site: quickstart, science, validation report, model cards, "add your device or workload".
   - Zenodo DOIs.
 - **Notebooks and case studies:**
