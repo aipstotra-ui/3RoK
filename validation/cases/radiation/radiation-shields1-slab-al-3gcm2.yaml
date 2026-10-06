@@ -42,4 +42,6 @@ notes: >-
   quantified, but physics-reviewer's order-of-magnitude estimate from ISS data suggests it is small and unlikely to
   close the gap alone). Halving the front slab changes the measured dose by only 5% (70.0 vs 73.6) but the
   model by 1.6x, which points to a penetrating or rear component. Rerun with include_gcr once a GCR dose model
-  exists, and report which component closes the gap (physics-reviewer, PR #9).
+  exists, and report which component closes the gap (physics-reviewer, PR #9). Fragile: the source's model is
+  only 2.5% outside the factor-2 band (2.05x), so an implementation a few percent above NOVICE turns this
+  documented miss into an unexpected pass. Do not change the tolerance for that; report the ratio.
