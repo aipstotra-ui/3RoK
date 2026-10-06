@@ -62,6 +62,9 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **Real-time publication latency** of GFZ nowcast Kp and Kyoto quicklook Dst: UNVERIFIED (protocol rule 3.4).
 - **SWPC verification is from 2013.** Pre-2022 3-day forecast files (SWPC FTP warehouse) are unverified, so SWPC's own 2013 numbers cannot yet be reproduced as an implementation check.
 - **SWPC 2012–13 G1+ contingency counts** are in an image (not re-checked).
+- **Protocol `assumption` latencies** (validation/forecast-protocol.md §3): RTSW 1 h, GFZ nowcast Kp (exclude the newest block), Kyoto quicklook Dst 2 h. Each must be replaced with a sourced value before training.
+- **Archived real-time inputs** (RTSW, nowcast Kp, quicklook Dst) for 2022–2025: find a source, or the headline result must be labelled "definitive-input hindcast" (protocol §3.1).
+- **NOAA reader cases still to add:** a missing file and an amended (reissued) forecast. No real examples found yet.
 
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms

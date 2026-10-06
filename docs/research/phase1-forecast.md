@@ -29,7 +29,7 @@ Tags:
     | Day 3 | 0.975 | 1.265 | +0.197 | 0.357 | **−0.052** |
 
   - The negative skill means the forecast was worse than climatology in 2013.
-- **SWPC next-day G1+ contingency table, 2012-07-25 to 2013-12-31** [direct; on p. 4 the table is an image, not re-checked]:
+- **SWPC next-day G1+ contingency table, 2012-07-25 to 2013-12-31** [PROXY: the table on p. 4 is an image that could not be text-read; values UNVERIFIED]:
   - hits 14, misses 19, false alarms 44, correct nulls 448
   - POD 0.42, FAR 0.76, CSI 0.18, bias 1.76
   - Only 33 events.
@@ -46,7 +46,7 @@ Tags:
     | μOMNI | storm intervals | 0.69 | 1.48 | 1.11 | 0.29 |
     | μOMNI+ | storm intervals | 0.75 | 0.90 | 0.67 | 0.56 |
 
-  - Values are from the arXiv preprint; the journal version may differ slightly.
+  - Values are from the arXiv preprint (the storm rows were re-checked against the text); the journal version may differ slightly.
 - **Gruet et al. 2018** (Dst, 1–6 h) and **Wintoft et al. 2017** (Kp): numbers from abstracts or search only. UNVERIFIED, not used.
 
 ## Data timing (leakage-critical)
@@ -56,3 +56,10 @@ Tags:
   - The page does **not** use the words "bow-shock nose", so cite the source's wording.
 - **SWPC real-time solar wind (DSCOVR/ACE at L1):** whether it is time-shifted is UNVERIFIED (search summary only; the SWPC page is silent).
 - **GFZ nowcast Kp latency** and **Kyoto quicklook Dst latency:** UNVERIFIED. The pages say only "realtime" and that quicklook Dst may contain noise and baseline shifts.
+
+## NOAA issue-selection example [verified]
+For the target block 2025-10-01 21-00UT, the two issues disagree:
+- the 0030 UTC issue (`202510010030`) gives **3.00**
+- the 1230 UTC issue (`202510011230`) gives **5.67 (G2)**
+
+This pair is used in `validation/cases/forecast/forecast-noaa-issue-selection-*.yaml`.
