@@ -243,6 +243,12 @@ def _print_table(results: list[CaseResult]) -> None:
         print(
             f"{r.outcome.value:<20} {r.id:<{width}}  ours={ours:<12} ref={r.reference:.6g} {r.unit}"
         )
+        if r.detail and r.outcome in (
+            Outcome.KNOWN_MISS,
+            Outcome.PASS,
+            Outcome.PASS_UNVERIFIED_REF,
+        ):
+            print(f"{'':<20} {'':<{width}}  note: {r.detail}")
     counts: dict[str, int] = {}
     for r in results:
         counts[r.outcome.value] = counts.get(r.outcome.value, 0) + 1

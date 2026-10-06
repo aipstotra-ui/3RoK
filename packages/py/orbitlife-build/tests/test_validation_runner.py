@@ -297,3 +297,18 @@ def test_known_miss_does_not_fail_ci_but_strict_still_fails_on_not_implemented(
         yaml.safe_dump(_case(id="a-todo", target="orbitlife.nope.fn"))
     )
     assert main([*args, "--strict"]) == 1
+
+
+def test_console_shows_detail_for_flagged_results(
+    fake_module: types.ModuleType, capsys: pytest.CaptureFixture[str]
+) -> None:
+    from orbitlife_build.validation import _print_table
+
+    passed = run_case(ValidationCase.model_validate(_case(expected=_MISS)))
+    missed = run_case(
+        ValidationCase.model_validate(_case(id="b", inputs={"altitude_km": 700.0}, expected=_MISS))
+    )
+    _print_table([passed, missed])
+    out = capsys.readouterr().out
+    assert "expected a documented miss but passed" in out
+    assert "empirical density models under-predict storms" in out
