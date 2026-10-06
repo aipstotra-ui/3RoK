@@ -6,7 +6,11 @@ name = "orbitlife-build"
 version = "0.0.0"
 description = "Private builders for orbitlife data products and models."
 requires-python = ">=3.11"
-dependencies = ["orbitlife"]
+dependencies = [
+    "orbitlife",
+    "pydantic>=2.8",
+    "pyyaml>=6",
+]
 
 [build-system]
 requires = ["hatchling>=1.25"]

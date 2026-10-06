@@ -34,3 +34,8 @@ data-verify release:
     rm -rf data-cache/{{release}}
     gh release download {{release}} -D data-cache/{{release}}
     uv run python -m orbitlife_build.manifest verify data-cache/{{release}}/manifest.json data-cache/{{release}}
+
+# Run the scientific validation suite (validation/cases). Add --strict to also fail on
+# NOT_IMPLEMENTED cases and on matches against UNVERIFIED references (required from Phase 2 exit).
+validate *args:
+    uv run python -m orbitlife_build.validation {{args}}
