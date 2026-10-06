@@ -40,6 +40,11 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
   - forecasts (NOAA 3-day archive, OMNI timing, on-orbit upset counts, thermal constants, checkpoint formulas)
   - workloads (ResNet-50, ~1B LLM, fault-injection and SDC studies)
 
+## Validation cases deferred (physics-reviewer, PR #7)
+- **Tiangong-1 Feb 2018 decay-rate case removed.** Its start altitude (280 km) was a January value with no source; back-integrating Pardini's rates gives ≈268.5 km on 1 Feb. Restore it when `researcher` reads the 1 Feb mean altitude from pardini2019tiangong1 Fig. 4.
+- **Starlink Group 4-7 orientation:** RAAN / local time must come from Space-Track TLEs (Phase 2). The 'previous launches' baseline in the SpaceX statement is undefined; our quiet-Ap baseline is a stated design choice.
+- **An independent (non-fitted) drag physics case is still needed,** for example ISS decay between reboosts from TLEs. The Tiangong-1 reentry case is an implementation check because B was fitted with NRLMSISE-00.
+
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
 - GOES-R SGPS licence

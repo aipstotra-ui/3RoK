@@ -1,23 +1,34 @@
 id: drag-starlink-g47-storm-drag-ratio
-title: Storm-time drag increase at ~210 km, Starlink Group 4-7 (3-4 Feb 2022)
+title: Peak storm-time drag increase on the Starlink Group 4-7 deployment orbit (3-4 Feb 2022)
 module: drag
 check: physics
-target: orbitlife.drag.storm_to_quiet_drag_ratio
+target: orbitlife.drag.storm_drag_ratio
 inputs:
-  altitude_km: 210.0
+  perigee_km: 210.0                        # deployment orbit 210 x 350 km (fang2022starlink §1)
+  apogee_km: 350.0
   inclination_deg: 53.0
-  storm_epoch_utc: "2022-02-04T00:00:00Z"
+  storm_window_utc: ["2022-02-03T00:00:00Z", "2022-02-05T00:00:00Z"]
+  statistic: max                           # matches "up to"
+  baseline: same_orbit_quiet_geomagnetic   # same orbit and epochs, Ap held at a quiet level, F10.7 unchanged
+  baseline_ap: 4                           # design choice: Kp ~1- (quiet)
+  raan_source: tle                         # RAAN/local time from Space-Track TLEs (Phase 2; docs/open-issues.md)
   space_weather: historical
-quantity: storm-time drag / quiet-time drag
+quantity: max over the storm window of drag(storm) / drag(quiet baseline)
 unit: "1"
 reference:
   value: 1.5
   source: spacex2022geostorm
   locator: "update of 8 Feb 2022: drag 'up to 50 percent higher than during previous launches' (onboard GPS)"
   status: CONFIRMED
-  note: "An upper value with an undefined baseline ('previous launches'). Model studies: NRLMSISE-00 <=20-25%, WAM-IPE/GAIA 50-125% (fang2022starlink, kataoka2022starlink)."
+  note: >-
+    An upper value whose baseline ('previous launches') is not defined by the source; our baseline is a
+    design choice that isolates the geomagnetic effect. Model studies: NRLMSISE-00 <=20-25%, WAM-IPE/GAIA
+    50-125% (fang2022starlink, kataoka2022starlink).
 tolerance:
   kind: rel
   value: 0.20
   rationale: "Design choice: accept 1.2-1.8. NRLMSIS-class models are expected to land at or below 1.2, so a FAIL here is the honest, published weakness of empirical density models in storms, not a reason to widen the tolerance."
-notes: "This case is designed to expose the known under-prediction. Report the residual in the validation report."
+notes: >-
+  Designed to expose the known under-prediction; report the residual in the validation report. The ratio
+  cancels B (density ratio along the orbit). Baseline mismatch with SpaceX's 'previous launches' is a
+  stated limitation (physics-reviewer, PR #7).
