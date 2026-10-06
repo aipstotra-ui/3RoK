@@ -1,0 +1,21 @@
+id: orbit-beta-aqua-like-705
+title: Beta angle, 705.3 km / 98.2 deg, RAAN 150.0 deg (GCRF) at 2025-06-21T00:00:00Z (Orekit)
+module: orbit
+check: implementation
+target: orbitlife.orbit.beta_angle_deg
+inputs:
+  epoch_utc: "2025-06-21T00:00:00Z"
+  inclination_deg: 98.2
+  raan_gcrf_deg: 150.0
+quantity: solar beta angle (asin of orbit normal . Sun direction, GCRF)
+unit: deg
+reference:
+  value: 47.194727
+  source: orekit_13_1_9
+  locator: "orekit_refs.out.json, orbits.aqua-like-705.beta_deg"
+  status: CONFIRMED
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json"
+tolerance:
+  kind: abs
+  value: 0.02
+  rationale: "Independent Sun ephemerides (Orekit uses JPL DE data from orekit-data) can differ by up to ~0.01 deg; 0.02 deg leaves margin without hiding frame or sign errors (a wrong RAAN frame or sign shifts beta by degrees)."

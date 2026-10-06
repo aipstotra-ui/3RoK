@@ -23,9 +23,32 @@ def sso_inclination_deg(altitude_km: float, eccentricity: float = 0.0) -> float:
 
 
 def eclipse_duration_min(
-    altitude_km: float, beta_deg: float, shadow_model: Literal["cylindrical", "conical"] = "conical"
+    altitude_km: float,
+    beta_deg: float,
+    shadow_model: Literal["cylindrical", "conical_umbra", "conical_penumbra"] = "conical_umbra",
+    sun_distance_au: float = 1.0,
 ) -> float:
-    """Time in Earth's shadow per revolution at a given beta angle."""
+    """Time in Earth's shadow per revolution at a fixed beta angle (spherical Earth, 6378.137 km).
+
+    conical_penumbra = umbra + penumbra time.
+    """
+
+
+def beta_angle_deg(epoch_utc: str, inclination_deg: float, raan_gcrf_deg: float) -> float:
+    """Solar beta angle: asin(orbit normal . Sun direction), both in GCRF."""
+
+
+def sgp4_position_teme_km(
+    tle_line1: str, tle_line2: str, minutes_since_epoch: float, component: Literal["x", "y", "z"]
+) -> float:
+    """SGP4 (Vallado 2006 revision) TEME position component."""
+
+
+# orbitlife.frames
+def itrs_to_gcrs_km(
+    epoch_utc: str, x_km: float, y_km: float, z_km: float, component: Literal["x", "y", "z"]
+) -> float:
+    """ITRS to GCRS position transform (IERS 2010 conventions, EOP applied)."""
 
 
 # orbitlife.drag

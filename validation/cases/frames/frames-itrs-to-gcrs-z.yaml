@@ -1,0 +1,24 @@
+id: frames-itrs-to-gcrs-z
+title: ITRS to GCRS position, z component, at 2004-04-06T07:51:28.386009Z (Orekit, IERS 2010)
+module: orbit
+check: implementation
+target: orbitlife.frames.itrs_to_gcrs_km
+inputs:
+  epoch_utc: "2004-04-06T07:51:28.386009Z"
+  x_km: -1033.479383
+  y_km: 7901.2952754
+  z_km: 6380.3565958
+  component: z
+quantity: GCRS position z
+unit: km
+reference:
+  value: 6378.136915
+  source: orekit_13_1_9
+  locator: "orekit_refs.out.json, frames.gcrf_km[2]"
+  status: CONFIRMED
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json. IERS 2010, EOP from orekit-data (simpleEOP=False)."
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: "1 m: differences in EOP data versions and interpolation between implementations are at the cm-dm level; any convention error (missing polar motion, wrong precession-nutation, UT1 vs UTC) is metres to kilometres."
+notes: "Input point is the textbook ITRF example position; the reference is Orekit's output, not the textbook's."

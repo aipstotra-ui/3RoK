@@ -1,0 +1,22 @@
+id: orbit-sgp4-06251-t2880-z
+title: SGP4 position, satellite 06251, 2880 min after epoch, TEME z (Vallado et al. 2006 verification set)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sgp4_position_teme_km
+inputs:
+  tle_line1: "1 06251U 62025E   06176.82412014  .00008885  00000-0  12808-3 0  3985"
+  tle_line2: "2 06251  58.0579  54.0425 0030035 139.1568 221.1854 15.56387291  6774"
+  minutes_since_epoch: 2880.0
+  component: z
+quantity: TEME position z
+unit: km
+reference:
+  value: 4353.49418579
+  source: vallado2006sgp4
+  locator: "AIAA-2006-6753.zip: sgp4/mat/SGP4-VER.TLE and tmatverDec2015.out (satellite 6251, t = 2880 min)"
+  status: CONFIRMED
+  note: "Verified by the main agent from the downloaded verification files (zip sha256 3642043b706c76be...)."
+tolerance:
+  kind: abs
+  value: 0.00001
+  rationale: "1 cm: the reference is the authors' own SGP4 implementation; independent ports of the same code agree to well below this. Any algorithm or constant error is metres or more."
