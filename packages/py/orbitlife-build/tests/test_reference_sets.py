@@ -199,3 +199,12 @@ def test_workload_sources_are_checked(tmp_path: Path) -> None:
     )
     with pytest.raises(ValueError, match="nope"):
         load_reference_sets(tmp_path, BIB)
+
+
+def test_optional_workload_values_must_be_positive() -> None:
+    from orbitlife_build.reference import WorkloadSet
+
+    with pytest.raises(ValidationError):
+        WorkloadSet.model_validate(
+            {"schemaVersion": 1, "workloads": [_workload(flops_per_item=_sv(-1.0))]}
+        )

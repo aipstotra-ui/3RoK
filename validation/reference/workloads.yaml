@@ -1,5 +1,7 @@
 # Reference AI workloads (Phase 1.3). Sources: docs/research/phase1-workloads.md; all values below verified
-# directly by the main agent on 2026-10-06. Memory footprint (parameters x precision) drives upset exposure.
+# directly by the main agent on 2026-10-06.
+# Weight memory (parameters x precision) is ONE input to upset exposure. Phase 4 adds activations, KV/state
+# caches, optimizer state, registers and control logic; a weights-only exposure model would under-count upsets.
 schemaVersion: 1
 workloads:
   - id: resnet50-inference
@@ -8,36 +10,36 @@ workloads:
     model_name: torchvision ResNet50_Weights.IMAGENET1K_V1
     parameters: {value: 25557032, source: torchvision_resnet50_weights, locator: "weights table: num_params", status: CONFIRMED}
     precision: {value: 32, design_choice: "fp32 as distributed (97.8 MB file / 25.56M params = ~4 bytes per weight); reduced-precision variants are separate workloads"}
-    flops_per_item: {value: 3.8e9, source: he2016resnet, locator: "Table 1, §4.1 ('3.8 billion FLOPs', FLOPs = multiply-adds)", status: CONFIRMED,
-                     note: "Original ResNet-50. torchvision's V1.5 variant reports 'GFLOPS 4.09' with a different counting tool"}
+    flops_per_item: {value: 4.09e9, source: torchvision_resnet50_weights, locator: "weights table: GFLOPS 4.09", status: CONFIRMED,
+                     note: "Same model as the weights (torchvision ResNet V1.5). The page does not state whether 'GFLOPS' counts multiply-adds (UNVERIFIED convention). The original ResNet-50 of he2016resnet is 3.8e9 multiply-adds."}
     benchmark:
-      name: ImageNet-1K top-1
+      name: ImageNet-1K top-1 (torchvision eval transforms)
       unit: "%"
       result: {value: 76.13, source: torchvision_resnet50_weights, locator: "weights table: acc@1", status: CONFIRMED}
     license: {name: BSD-3-Clause (torchvision code), source: torchvision_repo, locator: "GitHub repository licence", status: CONFIRMED,
               note: "Terms of the ImageNet-trained weights not researched (UNVERIFIED)"}
 
-  - id: qwen25-1p5b-inference
-    name: Qwen2.5-1.5B base model, inference
+  - id: nemotron3-nano-4b-inference
+    name: NVIDIA Nemotron-3-Nano-4B, inference
     phase: inference
-    model_name: Qwen/Qwen2.5-1.5B
-    parameters: {value: 1543714304, source: hf_qwen25_15b, locator: "HF API safetensors total", status: CONFIRMED,
-                 note: "1.31B non-embedding (qwen2025blog model table)"}
-    precision: {value: 16, source: hf_qwen25_15b, locator: "config.json torch_dtype: bfloat16", status: CONFIRMED}
-    context_length: {value: 32768, source: qwen2025blog, locator: "model table: context 32K", status: CONFIRMED,
-                     note: "config.json max_position_embeddings is 131072"}
-    benchmark:
-      name: MMLU (base model)
-      unit: "%"
-      result: {value: 60.9, source: qwen2025blog, locator: "Qwen2.5-0.5B/1.5B/3B performance table", status: CONFIRMED}
-    license: {name: Apache-2.0, source: hf_qwen25_15b, locator: "HF API tags (license:apache-2.0); not gated", status: CONFIRMED}
-    note: "Chosen for its permissive licence (fault-injection research and redistribution allowed). ~1.5B, slightly above the ~1B target."
+    model_name: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    parameters: {value: 3973556832, source: hf_nemotron3_nano_4b, locator: "HF API safetensors total", status: CONFIRMED}
+    precision: {value: 16, source: hf_nemotron3_nano_4b, locator: "config.json torch_dtype: bfloat16", status: CONFIRMED}
+    context_length: {value: 262144, source: hf_nemotron3_nano_4b, locator: "config.json max_position_embeddings", status: CONFIRMED,
+                     note: "Maximum positions in the config; the usable context may be stated differently on the model card (not checked)"}
+    license: {name: NVIDIA Nemotron Open Model License, source: nvidia_nemotron_oml, locator: "licence text: grant and §3 Redistribution", status: CONFIRMED,
+              note: "Commercially usable; derivative works allowed; redistribution needs a copy of the licence and the notice 'Licensed by NVIDIA Corporation under the NVIDIA Nemotron Model License.' Not gated."}
+    note: >-
+      Hybrid Mamba-Transformer (nemotron_h, 42 layers; config hybrid_override_pattern: mostly Mamba-2 blocks with a
+      few attention blocks). Chosen by Aiden (NVIDIA-built, permissive licence). Published bit-flip studies so far
+      cover Transformers only, so Phase 4 results for this architecture have no external comparison point.
+      No benchmark recorded yet (model-card scores not verified).
 
-  - id: qwen25-1p5b-training-step
-    name: Qwen2.5-1.5B, one training step
+  - id: nemotron3-nano-4b-training-step
+    name: NVIDIA Nemotron-3-Nano-4B, one training step
     phase: training
-    model_name: Qwen/Qwen2.5-1.5B
-    parameters: {value: 1543714304, source: hf_qwen25_15b, locator: "HF API safetensors total", status: CONFIRMED}
+    model_name: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
+    parameters: {value: 3973556832, source: hf_nemotron3_nano_4b, locator: "HF API safetensors total", status: CONFIRMED}
     precision: {value: 16, design_choice: "bf16 mixed-precision training; fp32 master weights and optimizer state are modelled separately in Phase 4"}
-    license: {name: Apache-2.0, source: hf_qwen25_15b, locator: "HF API tags (license:apache-2.0); not gated", status: CONFIRMED}
+    license: {name: NVIDIA Nemotron Open Model License, source: nvidia_nemotron_oml, locator: "licence text: grant and §3 Redistribution", status: CONFIRMED}
     note: "Training memory (gradients, optimizer state, activations) is several times the weights; Phase 4 defines it."

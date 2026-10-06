@@ -156,7 +156,11 @@ class Benchmark(_Strict):
 
 
 class Workload(_Strict):
-    """A reference AI workload. Its memory footprint drives exposure to upsets."""
+    """A reference AI workload.
+
+    Weight memory (parameters x precision) is one input to upset exposure; Phase 4 adds activations,
+    caches, optimizer state and registers.
+    """
 
     id: _ID
     name: _NON_EMPTY
@@ -174,8 +178,13 @@ class Workload(_Strict):
 
     @model_validator(mode="after")
     def _positive(self) -> Workload:
-        if self.parameters.value <= 0 or self.precision.value <= 0:
-            raise ValueError(f"{self.id}: parameters and precision must be positive")
+        optional = [self.flops_per_item, self.context_length]
+        if self.benchmark is not None:
+            optional.append(self.benchmark.result)
+        values = [self.parameters.value, self.precision.value]
+        values += [v.value for v in optional if v is not None]
+        if any(v <= 0 for v in values):
+            raise ValueError(f"{self.id}: sizes, precision and benchmark values must be positive")
         return self
 
 
