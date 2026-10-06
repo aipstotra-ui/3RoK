@@ -50,7 +50,7 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **ISS TMS44400 DRAM in-flight SEU rate (koontz2020issee):** in-flight 8.5e-8 and 7.0e-8 SEU/bit/day are saved, but the device cross-section slide is unreadable (σsat exponent, W). Restore once the TI-44100 heavy-ion data are sourced.
 - **No fully specified LEO CREME96 SEU (per-bit) worked example** found and readable (2026-10-06). Tylka 1997 and Petersen 2011 are paywalled; Engel et al. 2006 and the ESCIES Sturesson slides are unopened leads. Aiden could supply a paywalled source.
 - **SEL flux reproduction:** the TI SEL cases take the CREME96 flux as an input. Reproducing it needs the CREME96 'ISS' orbit parameters, which the source does not state. The `researcher` could check whether CREME96's built-in ISS preset fixes altitude and inclination.
-- **Flux geometry convention** (omnidirectional vs per sr; planar-target factor 1/4 to 1/2) must be recorded before Phase 2 computes SEL or SEU rates from an environment (physics-reviewer, PR #13).
+- ~~Flux geometry convention~~: decided in ADR 0007 (E4). Still open: the CREME96 TRP per-sr derivation is UNVERIFIED, and the primary sources (Adams 1983, Tylka 1997, Petersen 2011) are not yet read.
 
 ## Radiation model gaps (physics-reviewer, PR #9)
 - **ESP-PSYCHIC** (Xapsos et al. 2000, 2007) must be sourced and given an ADR before Phase 2 builds it. The SPENVIS dose-depth cases need it.
