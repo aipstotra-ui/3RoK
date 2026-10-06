@@ -2,6 +2,9 @@
 # Sources: docs/research/phase1-orbit-drag.md. Statuses come from the researcher.
 # altitude_km = mean semi-major axis - 6378.137 km (circular orbit, mean elements); not geodetic height.
 # inclination_deg = mean inclination. ltan_h = mean local time of the ascending node (hours).
+# ASSUMPTION: sourced altitudes (FCC, NASA) are nominal and do not state their definition; we take them as
+# a - R_eq. Mean geodetic height is ~(a - R_eq) + 21.4 km * sin^2(i) / 2, i.e. up to ~11 km higher near-polar
+# (~10-15% drag density at 400-550 km). Revisit in Phase 2 when drag work reads TLEs (docs/open-issues.md).
 schemaVersion: 1
 missions:
   - id: starlink-shell1

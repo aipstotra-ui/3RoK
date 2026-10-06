@@ -15,6 +15,7 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 5. **`capacity_bits`** (bits under test) for per-bit ↔ per-device conversion.
 6. **Controlled vocabularies** for `quantity` and `unit`. The `effect` enum and `kind` exist since PR #5.
 7. **Missions:**
+   - sourced nominal altitudes (FCC, NASA) are taken as a − R_eq by assumption. Mean geodetic height is up to ~11 km higher near-polar (~10–15% drag density at 400–550 km). Resolve with TLE-derived mean elements in Phase 2 (physics-reviewer, PR #5, attempt 2).
    - eccentricity
    - epoch
    - a structured altitude tolerance (Starlink ±30 km, ISS 330–425 km)
