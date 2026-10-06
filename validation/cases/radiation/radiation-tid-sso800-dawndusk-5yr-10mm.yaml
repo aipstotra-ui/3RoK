@@ -33,5 +33,7 @@ notes: >-
   Settings not recoverable from the source (record our choices as assumptions in Phase 2): geomagnetic field
   model and epoch for AP8/AE8 B,L; SPENVIS SEP shielding mode; ESP solar-active-year counting for 2011-2016;
   SHIELDOSE-2 vs -2Q; orbit sampling. GCR is not part of SHIELDOSE-2 TID. A single total can pass while species
-  errors cancel, so the validation report must break residuals down by species. Mixed epochs (AP-8 solar minimum with AE-8 solar maximum) as chosen in the source. The total includes trapped
+  errors cancel, so the validation report must break residuals down by species.
+
+  Mixed epochs (AP-8 solar minimum with AE-8 solar maximum) as chosen in the source. The total includes trapped
   protons, trapped electrons (with bremsstrahlung) and ESP-PSYCHIC solar protons at 80% confidence.

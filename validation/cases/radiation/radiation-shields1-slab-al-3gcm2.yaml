@@ -34,7 +34,9 @@ tolerance:
   rationale: "Design choice: the per-year rate is extrapolated from an accumulation interval the source does not state, and both slabs are approximations of the real spacecraft. Do not widen if the case fails."
 notes: >-
   Physics case against a real flight measurement. If it fails, the cause is not established. Candidates: the
-  rear-shielding approximation, GCR (excluded here and possibly a large share of ~70 rad/yr), and AP8/AE8 accuracy at
-  500 km near solar minimum. Halving the front slab changes the measured dose by only 5% (70.0 vs 73.6) but the
+  rear-shielding approximation; AE8min accuracy in the outer-belt horns at 85 deg; AP8min accuracy at 500 km near
+  solar minimum; the dosimeter's calibration and temperature response; and GCR (excluded here; its share is not yet
+  quantified, but physics-reviewer's order-of-magnitude estimate from ISS data suggests it is small and unlikely to
+  close the gap alone). Halving the front slab changes the measured dose by only 5% (70.0 vs 73.6) but the
   model by 1.6x, which points to a penetrating or rear component. Rerun with include_gcr once a GCR dose model
   exists, and report which component closes the gap (physics-reviewer, PR #9).

@@ -78,7 +78,7 @@ def tid_dose_rad_si(
     trapped_proton_model: str = "ap8min",
     trapped_electron_model: str = "ae8max",
     solar_proton_model: str | None = None,  # design mode is explicit, e.g. "esp_psychic"
-    solar_proton_confidence: float | None = None,
+    solar_proton_confidence: float | None = None,  # required when solar_proton_model is set
     sep_magnetic_shielding: str = "stormer_quiet",
     include_gcr: bool = False,
 ) -> DoseResult:
