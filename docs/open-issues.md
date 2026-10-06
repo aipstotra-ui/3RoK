@@ -48,7 +48,8 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 ## Radiation cases deferred (Phase 1.4b)
 - **ISS DOSTEL dose rate (berger2017dosis):** measured rates are saved, but the Columbus/DOSTEL shielding thickness is not given ("heavier shielded"). The case needs a sourced shielding distribution for that location, and a GCR dose model (GCR dominates inside the ISS).
 - **ISS TMS44400 DRAM in-flight SEU rate (koontz2020issee):** in-flight 8.5e-8 and 7.0e-8 SEU/bit/day are saved, but the device cross-section slide is unreadable (σsat exponent, W). Restore once the TI-44100 heavy-ion data are sourced.
-- **No fully specified LEO CREME96 SEU worked example** found. Not yet tried: Tylka et al. 1997.
+- **No fully specified LEO CREME96 SEU (per-bit) worked example** found and readable (2026-10-06). Tylka 1997 and Petersen 2011 are paywalled; Engel et al. 2006 and the ESCIES Sturesson slides are unopened leads. Aiden could supply a paywalled source.
+- **SEL flux reproduction:** the TI SEL cases take the CREME96 flux as an input. Reproducing it needs the CREME96 'ISS' orbit parameters, which the source does not state.
 
 ## Radiation model gaps (physics-reviewer, PR #9)
 - **ESP-PSYCHIC** (Xapsos et al. 2000, 2007) must be sourced and given an ADR before Phase 2 builds it. The SPENVIS dose-depth cases need it.

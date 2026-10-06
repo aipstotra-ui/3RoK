@@ -82,3 +82,18 @@ All rates are in µGy/day. Table 6 has 10 phases (2009–2016).
 
   These are GEO parameters, useful only to unit-test the Weibull integration.
 - **No fully specified LEO CREME96 worked example found** (UNVERIFIED). Not yet tried: Tylka et al. 1997.
+
+## SEL worked example (researcher on Sonnet, 2026-10-06; main agent verified against PDFs)
+- **TI SN54SC4T125-SEP SEL report** (`ti2023sbok084`) **[verified]**:
+  - §5.2: "Event rates were calculated for LEO (ISS) and GEO environments by combining CREME96 orbital integral flux estimations and simplified SEE cross-sections" with "100 mils (2.54 mm) of aluminum" and worst-week solar activity.
+  - Cross-section: σSEL ≤ 1.23×10⁻⁷ cm²/device (95% confidence upper bound) at LET_EFF 43 MeV·cm²/mg and 125 °C (eq. 1).
+  - Table 5-2 (onset LET 43; CREME96 integral flux /day/cm²; σsat; rate /day; FIT; MTBF):
+
+    | Environment | Flux | σsat | Rate | FIT | MTBF |
+    |---|---|---|---|---|---|
+    | LEO (ISS) | 6.40×10⁻⁴ | 1.23×10⁻⁷ | 7.87×10⁻¹¹ | 3.28×10⁻³ | 3.48×10⁷ yr |
+    | GEO | 2.17×10⁻³ | 1.23×10⁻⁷ | 2.67×10⁻¹⁰ | 1.11×10⁻² | 1.03×10⁷ yr |
+
+  - The ISS orbit altitude and inclination are **not stated**.
+- **TI SLVK046** (`ti2025slvk046`) **[verified, method text]**: the method note behind the report. CREME96 LEO-ISS and GEO integral flux vs LET at worst week, 100 mils Al; the Weibull fit is simplified to a square approximation. The researcher reported a GEO worked example in it (9.17e-9 /day) via a summary page, but it was not found in the PDF text (UNVERIFIED).
+- **No fully specified published LEO SEU (per-bit) worked example** found and readable. Tylka 1997 and Petersen 2011 are paywalled. Leads not opened: Engel et al. 2006 (BYU facpub/1307), ESCIES Sturesson slides.

@@ -1,0 +1,25 @@
+id: sel-ti-sn54sc4t125-leo-method
+title: SEL rate by the square approximation, TI SN54SC4T125-SEP, LEO (ISS) worst week (method check)
+module: sel
+check: implementation
+target: orbitlife.effects.sel_rate_per_device_day
+inputs:
+  method: square_approximation        # sigma = 0 below onset LET, sigma_sat above (TI SLVK046)
+  onset_let_mev_cm2_mg: 43.0
+  sigma_sat_cm2_per_device: 1.23e-7   # 95% upper bound; no SEL observed at LET 43, 125 C
+  integral_flux_above_onset_per_cm2_day: 6.40e-4   # CREME96 worst week, 100 mil Al, as given by the source
+quantity: SEL event rate per device
+unit: 1/day
+reference:
+  value: 7.87e-11
+  source: ti2023sbok084
+  locator: "§5.2, Table 5-2 (row LEO (ISS))"
+  status: CONFIRMED
+  note: "Verified against the PDF by the main agent (2026-10-06). An upper bound, because sigma_sat is a 95% upper limit from zero observed events."
+tolerance:
+  kind: rel
+  value: 0.01
+  rationale: "Pure method and unit check (flux x sigma_sat) against a 3-significant-figure published value."
+notes: >-
+  Method check only. The environment flux is an input, not computed, because the source does not state the
+  CREME96 ISS orbit parameters. Reproducing the flux needs those parameters (docs/open-issues.md).

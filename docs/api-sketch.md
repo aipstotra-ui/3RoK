@@ -106,6 +106,17 @@ def noaa_baseline_kp(issue_time_utc: str, block_start_utc: str) -> float:
     """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min, converted to exact thirds."""
 ```
 
+```python
+# orbitlife.effects
+def sel_rate_per_device_day(
+    method: Literal["square_approximation", "weibull"],
+    onset_let_mev_cm2_mg: float,
+    sigma_sat_cm2_per_device: float,
+    integral_flux_above_onset_per_cm2_day: float | None = None,  # or computed from an environment
+) -> float:
+    """Single-event latchup rate per device per day (TI SLVK046 square approximation, or a Weibull integral)."""
+```
+
 ## Top-level API
 
 ```python
