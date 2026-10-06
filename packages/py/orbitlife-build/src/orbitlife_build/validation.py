@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Annotated, Any, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
 _NON_EMPTY = Annotated[str, Field(min_length=1)]
 
@@ -140,7 +140,10 @@ def load_cases(cases_dir: Path, bib_text: str) -> list[ValidationCase]:
     seen: dict[str, Path] = {}
     paths = [*cases_dir.rglob("*.yaml"), *cases_dir.rglob("*.yml")]
     for path in sorted(paths):
-        case = ValidationCase.model_validate(yaml.safe_load(path.read_text()))
+        try:
+            case = ValidationCase.model_validate(yaml.safe_load(path.read_text()))
+        except ValidationError as exc:
+            raise ValueError(f"{path}: invalid case file\n{exc}") from exc
         if case.reference.source not in keys:
             raise ValueError(f"{path}: source {case.reference.source!r} not in docs/refs.bib")
         if case.id in seen:
@@ -233,7 +236,10 @@ def main(argv: list[str] | None = None) -> int:
 
     if not args.cases.is_dir():
         raise SystemExit(f"cases directory {args.cases} does not exist")
-    cases = load_cases(args.cases, args.bib.read_text())
+    try:
+        cases = load_cases(args.cases, args.bib.read_text())
+    except ValueError as exc:
+        raise SystemExit(f"validation cases could not be loaded: {exc}") from exc
     results = [run_case(c) for c in cases]
     _print_table(results)
     args.out.write_text(json.dumps([r.model_dump(mode="json") for r in results], indent=2) + "\n")

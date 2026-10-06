@@ -1,0 +1,23 @@
+id: drag-starlink-g47-storm-drag-ratio
+title: Storm-time drag increase at ~210 km, Starlink Group 4-7 (3-4 Feb 2022)
+module: drag
+check: physics
+target: orbitlife.drag.storm_to_quiet_drag_ratio
+inputs:
+  altitude_km: 210.0
+  inclination_deg: 53.0
+  storm_epoch_utc: "2022-02-04T00:00:00Z"
+  space_weather: historical
+quantity: storm-time drag / quiet-time drag
+unit: "1"
+reference:
+  value: 1.5
+  source: spacex2022geostorm
+  locator: "update of 8 Feb 2022: drag 'up to 50 percent higher than during previous launches' (onboard GPS)"
+  status: CONFIRMED
+  note: "An upper value with an undefined baseline ('previous launches'). Model studies: NRLMSISE-00 <=20-25%, WAM-IPE/GAIA 50-125% (fang2022starlink, kataoka2022starlink)."
+tolerance:
+  kind: rel
+  value: 0.20
+  rationale: "Design choice: accept 1.2-1.8. NRLMSIS-class models are expected to land at or below 1.2, so a FAIL here is the honest, published weakness of empirical density models in storms, not a reason to widen the tolerance."
+notes: "This case is designed to expose the known under-prediction. Report the residual in the validation report."

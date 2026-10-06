@@ -1,0 +1,24 @@
+id: drag-tiangong1-decay-rate-feb2018
+title: Tiangong-1 mean semi-major-axis decay rate, February 2018
+module: drag
+check: physics
+target: orbitlife.drag.mean_decay_rate_m_per_day
+inputs:
+  start_epoch_utc: "2018-02-01T00:00:00Z"
+  end_epoch_utc: "2018-03-01T00:00:00Z"
+  start_altitude_km: 280.0                  # ESA: mean altitude 280 km in Jan 2018 (esa2018tiangong_blog)
+  inclination_deg: 42.8
+  ballistic_coefficient_m2_per_kg: 0.007388
+  space_weather: historical
+quantity: mean semi-major-axis decay rate
+unit: m/day
+reference:
+  value: 591
+  source: pardini2019tiangong1
+  locator: "§4.1-4.2 (monthly mean rate, Feb 2018)"
+  status: CONFIRMED
+tolerance:
+  kind: rel
+  value: 0.30
+  rationale: "Design choice: a monthly mean rate is more sensitive to the start altitude (taken from a January mean) than an integrated reentry time. To be revisited with the Phase 2 residuals."
+notes: "Start altitude is approximate (the source gives a January mean, not the value on 1 Feb). Same B-circularity caveat as the reentry case."

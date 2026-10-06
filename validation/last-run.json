@@ -1,1 +1,86 @@
-[]
+[
+  {
+    "id": "drag-starlink-g47-storm-drag-ratio",
+    "module": "drag",
+    "check": "physics",
+    "quantity": "storm-time drag / quiet-time drag",
+    "unit": "1",
+    "reference": 1.5,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.drag.storm_to_quiet_drag_ratio does not exist yet"
+  },
+  {
+    "id": "drag-tiangong1-decay-rate-feb2018",
+    "module": "drag",
+    "check": "physics",
+    "quantity": "mean semi-major-axis decay rate",
+    "unit": "m/day",
+    "reference": 591.0,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.drag.mean_decay_rate_m_per_day does not exist yet"
+  },
+  {
+    "id": "drag-tiangong1-reentry-250-to-150km",
+    "module": "drag",
+    "check": "physics",
+    "quantity": "elapsed time",
+    "unit": "day",
+    "reference": 29.67,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.drag.days_to_altitude does not exist yet"
+  },
+  {
+    "id": "orbit-eclipse-aqua-max",
+    "module": "orbit",
+    "check": "implementation",
+    "quantity": "eclipse duration per orbit",
+    "unit": "min",
+    "reference": 34.6,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.orbit.max_eclipse_duration_min does not exist yet"
+  },
+  {
+    "id": "orbit-sso-inclination-600km",
+    "module": "orbit",
+    "check": "implementation",
+    "quantity": "mean inclination",
+    "unit": "deg",
+    "reference": 97.788,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.orbit.sso_inclination_deg does not exist yet"
+  },
+  {
+    "id": "orbit-sso-inclination-800km",
+    "module": "orbit",
+    "check": "implementation",
+    "quantity": "mean inclination",
+    "unit": "deg",
+    "reference": 98.603,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.orbit.sso_inclination_deg does not exist yet"
+  },
+  {
+    "id": "orbit-sso-inclination-aqua",
+    "module": "orbit",
+    "check": "implementation",
+    "quantity": "mean inclination",
+    "unit": "deg",
+    "reference": 98.2,
+    "ours": null,
+    "residual": null,
+    "outcome": "NOT_IMPLEMENTED",
+    "detail": "orbitlife.orbit.sso_inclination_deg does not exist yet"
+  }
+]

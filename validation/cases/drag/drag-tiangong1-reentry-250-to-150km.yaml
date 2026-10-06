@@ -1,0 +1,25 @@
+id: drag-tiangong1-reentry-250-to-150km
+title: Tiangong-1 time to fall from ~250 km to 150 km (Mar 2018)
+module: drag
+check: physics
+target: orbitlife.drag.days_to_altitude
+inputs:
+  start_epoch_utc: "2018-03-03T00:00:00Z"   # source gives the date only
+  start_altitude_km: 250.0                  # "~250 km" mean altitude above the equatorial radius
+  end_altitude_km: 150.0
+  inclination_deg: 42.8
+  ballistic_coefficient_m2_per_kg: 0.007388 # B = Cd*A/M, NRLMSISE-00 fit 8 Jan - 1 Apr 2018 (sigma 6.7%)
+  space_weather: historical
+quantity: elapsed time
+unit: day
+reference:
+  value: 29.67
+  source: pardini2019tiangong1
+  locator: "§4.1, Fig. 4 (250 km on 2018-03-03; 150 km on 2018-04-01 16:07 UTC); B from §5.3"
+  status: CONFIRMED
+  note: "29.67 d assumes 00:00 UTC on 2018-03-03 (date-only start, ±0.5 d)."
+tolerance:
+  kind: rel
+  value: 0.20
+  rationale: "Roadmap target for reentry-timing cases (±20%). Covers the ±0.5 d start-time ambiguity (~2%) and B uncertainty (6.7%); the rest is density-model error. Design choice, to be revisited with the Phase 2 residuals."
+notes: "Partly circular: B was fitted with NRLMSISE-00 over this window. A pass shows consistency with the fit, not independent skill."

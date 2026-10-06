@@ -1,0 +1,21 @@
+id: orbit-sso-inclination-600km
+title: Sun-synchronous inclination at 600 km (reference mission sso-dawn-dusk-600)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sso_inclination_deg
+inputs:
+  altitude_km: 600
+  eccentricity: 0.0
+quantity: mean inclination
+unit: deg
+reference:
+  value: 97.788
+  source: boain2004sso
+  locator: "Eq. 1"
+  status: UNVERIFIED
+  computed_with: "Boain Eq. 1, J2 = 1.08263e-3, mu = 398600.4418 km3/s2 (researcher); reproduced to 0.0005 deg by physics-reviewer"
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: "Same first-order J2 formula; the reference is quoted to 0.001 deg. A regression check only (UNVERIFIED: no published table)."
+notes: "Not evidence on its own: it checks our formula against an independent evaluation of the same formula."
