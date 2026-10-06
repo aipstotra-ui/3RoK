@@ -8,12 +8,15 @@ inputs:
   apogee_km: 350.0
   inclination_deg: 53.0
   storm_window_utc: ["2022-02-03T00:00:00Z", "2022-02-05T00:00:00Z"]
-  statistic: max                           # matches "up to"
+  averaging: per_revolution_mean           # drag averaged over each revolution (GPS-derived drag is orbit-smoothed)
+  statistic: max                           # max of the per-revolution ratios over the window; matches "up to"
+  step_s: 60                               # sampling step along the orbit
   baseline: same_orbit_quiet_geomagnetic   # same orbit and epochs, Ap held at a quiet level, F10.7 unchanged
-  baseline_ap: 4                           # design choice: Kp ~1- (quiet)
+  baseline_ap: 4                           # design choice: ap 4 = Kp 1o (quiet)
+  baseline_ap_mode: all_ap_history_elements # NRLMSISE-00 daily Ap and all 3-hourly ap history elements held at 4
   raan_source: tle                         # RAAN/local time from Space-Track TLEs (Phase 2; docs/open-issues.md)
   space_weather: historical
-quantity: max over the storm window of drag(storm) / drag(quiet baseline)
+quantity: max over the storm window of the per-revolution mean drag(storm) / per-revolution mean drag(quiet baseline)
 unit: "1"
 reference:
   value: 1.5
