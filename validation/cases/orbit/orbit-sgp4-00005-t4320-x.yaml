@@ -1,0 +1,22 @@
+id: orbit-sgp4-00005-t4320-x
+title: SGP4 position, satellite 00005, 4320 min after epoch, TEME x (Vallado et al. 2006 verification set)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sgp4_position_teme_km
+inputs:
+  tle_line1: "1 00005U 58002B   00179.78495062  .00000023  00000-0  28098-4 0  4753"
+  tle_line2: "2 00005  34.2682 348.7242 1859667 331.7664  19.3264 10.82419157413667"
+  minutes_since_epoch: 4320.0
+  component: x
+quantity: TEME position x
+unit: km
+reference:
+  value: -9060.47373569
+  source: vallado2006sgp4
+  locator: "AIAA-2006-6753.zip: sgp4/mat/SGP4-VER.TLE and tmatverDec2015.out (satellite 5, t = 4320 min)"
+  status: CONFIRMED
+  note: "Verified by the main agent from the downloaded verification files (zip sha256 3642043b706c76be...)."
+tolerance:
+  kind: abs
+  value: 0.00001
+  rationale: "1 cm: the reference is the authors' own SGP4 implementation; independent ports of the same code agree to well below this. Any algorithm or constant error is metres or more."

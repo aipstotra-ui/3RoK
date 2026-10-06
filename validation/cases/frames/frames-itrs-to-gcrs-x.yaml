@@ -1,0 +1,24 @@
+id: frames-itrs-to-gcrs-x
+title: ITRS to GCRS position, x component, at 2004-04-06T07:51:28.386009Z (Orekit, IERS 2010)
+module: orbit
+check: implementation
+target: orbitlife.frames.itrs_to_gcrs_km
+inputs:
+  epoch_utc: "2004-04-06T07:51:28.386009Z"
+  x_km: -1033.479383
+  y_km: 7901.2952754
+  z_km: 6380.3565958
+  component: x
+quantity: GCRS position x
+unit: km
+reference:
+  value: 5102.509168
+  source: orekit_13_1_9
+  locator: "orekit_refs.out.json, frames.gcrf_km[0]"
+  status: CONFIRMED
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json. IERS 2010, EOP from orekit-data (simpleEOP=False)."
+tolerance:
+  kind: abs
+  value: 0.00025
+  rationale: "0.25 m. Independent implementations agree to 3.5 cm (astropy/erfa vs Orekit; physics-reviewer, E3). The GCRS vs EME2000 (FK5 J2000) frame bias moves this point by (+0.08, +0.57, -0.61) m, so the y and z cases catch that mix-up; missing polar motion, a wrong precession-nutation model or UT1 vs UTC are larger still."
+notes: "The input point and epoch match the ITRF example widely used in Vallado's textbook IAU-2000 reduction example (not verified against the book, which is paywalled). The point is not LEO-like: |r| = 10208 km (~3830 km altitude). The reference is Orekit's output with orekit-data EOP, not the book's printed answer, which used different EOP values."

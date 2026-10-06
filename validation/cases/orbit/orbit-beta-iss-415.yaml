@@ -1,0 +1,21 @@
+id: orbit-beta-iss-415
+title: Beta angle, 415.0 km / 51.6 deg, RAAN 90.0 deg (GCRF) at 2025-06-21T00:00:00Z (Orekit)
+module: orbit
+check: implementation
+target: orbitlife.orbit.beta_angle_deg
+inputs:
+  epoch_utc: "2025-06-21T00:00:00Z"
+  inclination_deg: 51.6
+  raan_gcrf_deg: 90.0
+quantity: solar beta angle (asin of orbit normal . Sun direction, GCRF)
+unit: deg
+reference:
+  value: 14.673232
+  source: orekit_13_1_9
+  locator: "orekit_refs.out.json, orbits.iss-415.beta_deg"
+  status: CONFIRMED
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json Constants: Earth mu = 3.9860044180e+14 m3/s2 (WGS84), eclipse Earth sphere R = 6378.137 km, Sun radius = 695700.0 km, AU = 149597870700 m."
+tolerance:
+  kind: abs
+  value: 0.02
+  rationale: "Independent Sun ephemerides differ by ~0.01 deg or less (astropy/erfa reproduced Orekit to 1e-6 deg); 0.02 deg leaves margin. RAAN 90 deg is chosen so beta is sensitive to RAAN sign and frame errors (at RAAN 0 near the June solstice it was not; physics-reviewer, E3)."

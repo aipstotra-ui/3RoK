@@ -1,0 +1,22 @@
+id: orbit-eclipse-aqua-like-705-umbra
+title: Eclipse duration (umbra), 705.3 km at beta 47.195 deg (Orekit, conical shadow, spherical Earth)
+module: orbit
+check: implementation
+target: orbitlife.orbit.eclipse_duration_min
+inputs:
+  altitude_km: 705.3
+  beta_deg: 47.194727
+  shadow_model: conical_umbra
+  sun_distance_au: 1.016196
+quantity: time per revolution in umbra
+unit: min
+reference:
+  value: 27.3384
+  source: orekit_13_1_9
+  locator: "orekit_refs.out.json, orbits.aqua-like-705.umbra_min"
+  status: CONFIRMED
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json. Two-body propagation from 2025-06-21T00:00:00Z; EclipseDetector, Sun radius Constants.SUN_RADIUS, Earth sphere R = 6378.137 km, threshold 1e-4 s. Constants: Earth mu = 3.9860044180e+14 m3/s2 (WGS84), eclipse Earth sphere R = 6378.137 km, Sun radius = 695700.0 km, AU = 149597870700 m."
+tolerance:
+  kind: abs
+  value: 0.03
+  rationale: "An analytic fixed-beta conical model fed only these inputs reproduces Orekit to -0.005 to -0.010 min (physics-reviewer, E3). 0.03 min still catches cylindrical vs conical (0.13-0.24 min), a mean Earth radius of 6371 km (0.10-0.14 min) and umbra vs penumbra (0.28-0.50 min)."

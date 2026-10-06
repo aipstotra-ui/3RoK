@@ -1,0 +1,22 @@
+id: orbit-sgp4-28129-t120-x
+title: SGP4 deep-space (SDP4) position, satellite 28129 (12 h orbit), 120 min after epoch, TEME x (Vallado et al. 2006 verification set)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sgp4_position_teme_km
+inputs:
+  tle_line1: "1 28129U 03058A   06175.57071136 -.00000104  00000-0  10000-3 0   459"
+  tle_line2: "2 28129  54.7298 324.8098 0048506 266.2640  93.1663  2.00562768 18443"
+  minutes_since_epoch: 120.0
+  component: x
+quantity: TEME position x
+unit: km
+reference:
+  value: 18616.75971861
+  source: vallado2006sgp4
+  locator: "AIAA-2006-6753.zip: sgp4/mat/SGP4-VER.TLE and tmatverDec2015.out (satellite 28129, t = 120 min)"
+  status: CONFIRMED
+  note: "Verified by the main agent from the downloaded verification files (zip sha256 3642043b706c76be...)."
+tolerance:
+  kind: abs
+  value: 0.00001
+  rationale: "1 cm: the reference is the authors' own SGP4 implementation. Exercises the deep-space (SDP4, 12 h resonance) branch, which matters for GEO, GPS and Molniya trade studies (physics-reviewer, E3)."

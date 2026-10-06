@@ -70,7 +70,7 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 
 ## Phase 1 exit gaps (validation-analyst, 2026-10-06)
 - **No SEL case with a published Weibull fit.** The TI cases use the square approximation. This leaves the Phase 2 exit criterion "SEL rates match CREME96 within a factor of 2 for the same Weibull parameters" untestable until a source is found.
-- **No beta-angle case.** The roadmap lists Orekit/GMAT eclipse *and* beta angle; only one (cylindrical) eclipse case exists.
+- ~~No beta-angle case~~: closed by E3 (Orekit beta, umbra and penumbra cases).
 - **Tiangong-1 covers only the last ~29.7 days** of the "final year" in the roadmap.
 - **No machine-readable "expected FAIL" marker.** Once Phase 2 implements drag and radiation, the documented-miss cases (Starlink G4-7, Shields-1) will make `just validate` exit 1. This needs a decision from Aiden (or an ADR) before Phase 2.
 
@@ -88,7 +88,7 @@ Ranked by damage to expert trust. Each needs either a Phase 1 extension or a har
    - no GPU on-die SRAM entry
    - no MBU/MCU fraction or ECC scheme fields
    - no sea-level (JESD89A) cross-check case
-6. **Orbit geometry:** beta-angle case (Boain Fig. 8), Orekit umbra/penumbra cases, Vallado 2006 SGP4 verification vectors, one GCRS↔ITRS example.
+6. ~~**Orbit geometry**~~: closed by E3. Added Orekit beta (2), umbra/penumbra (4), ITRS→GCRS (3) and Vallado 2006 SGP4 (3) cases. Still open: a published (non-computed) beta reference; Boain Fig. 8 was not used, because reading values off a figure is imprecise.
 7. **Shields-1 same-model cases:** reproduce the source's NOVICE values (35.82, 27.38 rad(Si)) so physics residuals can be attributed.
 8. **Dose coverage:** self-run SPENVIS for every reference mission, with all settings recorded.
 9. **Forecast protocol v2** (allowed now, since no test score exists):
