@@ -21,4 +21,4 @@ tolerance:
   kind: abs
   value: 0.00025
   rationale: "0.25 m. Independent implementations agree to 3.5 cm (astropy/erfa vs Orekit; physics-reviewer, E3). The GCRS vs EME2000 (FK5 J2000) frame bias moves this point by (+0.08, +0.57, -0.61) m, so the y and z cases catch that mix-up; missing polar motion, a wrong precession-nutation model or UT1 vs UTC are larger still."
-notes: "The input is an arbitrary LEO-like ITRS position; the reference is Orekit's output. It is not taken from any textbook."
+notes: "The input point and epoch match the ITRF example widely used in Vallado's textbook IAU-2000 reduction example (not verified against the book, which is paywalled). The point is not LEO-like: |r| = 10208 km (~3830 km altitude). The reference is Orekit's output with orekit-data EOP, not the book's printed answer, which used different EOP values."
