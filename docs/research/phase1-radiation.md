@@ -95,5 +95,7 @@ All rates are in µGy/day. Table 6 has 10 phases (2009–2016).
     | GEO | 2.17×10⁻³ | 1.23×10⁻⁷ | 2.67×10⁻¹⁰ | 1.11×10⁻² | 1.03×10⁷ yr |
 
   - The ISS orbit altitude and inclination are **not stated**.
+  - These are **worst-week** (SEP-dominated) rates, not mission averages. The MTBF figures are worst-week MTBFs.
+  - The rate is TI's conservative estimate under its convention, **not a strict upper bound**. The 95% limit bounds σ only at LET_EFF 43 (the highest LET tested with no SEL, not an observed onset). σ = 0 below 43 and σ ≤ σ_bound above 43 are assumptions of the square approximation (physics-reviewer, PR #13).
 - **TI SLVK046** (`ti2025slvk046`) **[verified, method text]**: the method note behind the report. CREME96 LEO-ISS and GEO integral flux vs LET at worst week, 100 mils Al; the Weibull fit is simplified to a square approximation. The researcher reported a GEO worked example in it (9.17e-9 /day) via a summary page, but it was not found in the PDF text (UNVERIFIED).
 - **No fully specified published LEO SEU (per-bit) worked example** found and readable. Tylka 1997 and Petersen 2011 are paywalled. Leads not opened: Engel et al. 2006 (BYU facpub/1307), ESCIES Sturesson slides.
