@@ -206,6 +206,23 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - The suite runs and is red where expected.
   - `expert-skeptic` has reviewed the case list for gaps.
 
+### Phase 1 extension (approved by Aiden 2026-10-06, after the Phase 1 exit review)
+Closes the expert-skeptic's top gaps (docs/open-issues.md, "Phase 1 exit") before any physics code exists.
+
+| Item | Work | Needs Aiden? |
+|---|---|---|
+| E1 | Expected-miss marker: `expected: documented_miss` plus a reason. It reports KNOWN_MISS, never PASS, doesn't break CI, and keeps the residual | no |
+| E2 | Shields-1 same-model cases (reproduce the source's NOVICE values) | no |
+| E3 | Orbit geometry: beta angle (Boain), Orekit umbra/penumbra (we run Orekit, open source), Vallado 2006 SGP4 verification vectors, one GCRS↔ITRS example | no |
+| E4 | Flux-geometry ADR (omnidirectional vs per-sr; planar-target factor), sourced | no (researcher) |
+| E5 | Forecast protocol v2: Feb 2022 replay, threshold-weighted CRPS, tail quantiles, physics baselines (Newell / Burton), Kyoto provisional coverage | no (researcher) |
+| E6 | Data for GPU memory: an on-die SRAM entry, MBU/ECC fields, a sea-level (JESD89A) cross-check, a Weibull SEL source, plus schema hygiene (effect vs outcome, CONFIRMED_ABSTRACT) | no (researcher) |
+| E7 | Self-run **CREME96** SEU/SEL cases (Kintex Weibull, a proton case, a Weibull SEL) for the reference missions | **yes: CREME96 account; Aiden runs the inputs Claude prepares** |
+| E8 | Self-run **SPENVIS** dose-depth for every reference mission, all settings recorded | **yes: SPENVIS account; same** |
+| E9 | Drag cases a correct model should pass: ISS TLE decay between reboosts, May 2024 storm decay | **yes: Space-Track account to download TLE history**; plus researcher for published May 2024 analyses |
+
+Exit: E1–E9 merged (or a documented reason for each that cannot be done), and expert-skeptic re-reviews the case list.
+
 ### Phase 2: Python physics core
 - **Time and frames:** built on astropy/skyfield. Orbit-averaging uses vectorized J2 propagation sampled across precession cycles.
 - **Environment:**
