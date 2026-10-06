@@ -96,6 +96,12 @@ def tid_dose_rad_si(
     """
 ```
 
+```python
+# orbitlife.forecast
+def noaa_3day_kp(issue_utc: str, block_start_utc: str) -> float:
+    """NOAA SWPC 3-day forecast Kp (in thirds) for one 3-hour block, from the archived text product."""
+```
+
 ## Top-level API
 
 ```python

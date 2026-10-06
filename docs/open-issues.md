@@ -37,7 +37,7 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
   - Starlink v1.5 mass and area
 - **Not yet researched (stopped 2026-10-05 to save tokens; to be redone just in time on Sonnet):**
   - radiation: GCR/cutoff and SEP model specifications, AP9/AE9 licence terms (dose-depth, ISS dosimetry and CREME96 searches done 2026-10-06; docs/research/phase1-radiation.md)
-  - forecasts (NOAA 3-day archive, OMNI timing, on-orbit upset counts, thermal constants, checkpoint formulas)
+  - on-orbit upset counts, thermal constants, checkpoint formulas (forecast references done 2026-10-06; docs/research/phase1-forecast.md)
   - workloads (ResNet-50, ~1B LLM, fault-injection and SDC studies)
 
 ## Validation cases deferred (physics-reviewer, PR #7)
@@ -55,6 +55,13 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **Geomagnetic field model and epoch for AP8/AE8 B,L** (this moves the SAA): pin it in an ADR.
 - **GCR dose model:** needed to rerun the Shields-1 cases with `include_gcr` and to restore the ISS DOSTEL case.
 - **Dose by species:** the validation report must show residuals broken down by species (trapped p, trapped e plus bremsstrahlung, SEP, GCR).
+
+## Forecast protocol gaps (Phase 1, validation/forecast-protocol.md)
+- **Real-time L1 solar wind (SWPC RTSW):** is it time-shifted to the magnetosphere? UNVERIFIED. Source this before training.
+- **Maximum L1-to-magnetosphere propagation time used by OMNI:** needed for the leakage lag in protocol rule 3.2.
+- **Real-time publication latency** of GFZ nowcast Kp and Kyoto quicklook Dst: UNVERIFIED (protocol rule 3.4).
+- **SWPC verification is from 2013.** Pre-2022 3-day forecast files (SWPC FTP warehouse) are unverified, so SWPC's own 2013 numbers cannot yet be reproduced as an implementation check.
+- **SWPC 2012–13 G1+ contingency counts** are in an image (not re-checked).
 
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
