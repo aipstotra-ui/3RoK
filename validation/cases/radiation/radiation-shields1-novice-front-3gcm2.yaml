@@ -1,0 +1,37 @@
+id: radiation-shields1-novice-front-3gcm2
+title: Reproduce the source's own AP8/AE8 model, front slab only, 3.00 g/cm2 Al, 500 km / 85 deg (same-model check)
+module: radiation
+check: implementation
+target: orbitlife.radiation.tid_dose_rad_si
+inputs:
+  altitude_km: 500.0
+  inclination_deg: 85.0
+  start_epoch_utc: "2018-12-16T00:00:00Z"
+  duration_yr: 1.0
+  geometry: slab_one_sided                  # front slab only (2 pi), as in the source's 'Modeled TID' column
+  shielding_g_cm2_al: 3.00
+  target_material: si
+  trapped_proton_model: ap8min              # ASSUMPTION: source says only 'AP8 AE8'; mission was at solar minimum
+  trapped_electron_model: ae8min            # ASSUMPTION: as above
+  solar_proton_model: null                  # source included SOLPRO (King); its share is not stated (see notes)
+quantity: total ionizing dose in one year, front 2 pi only
+unit: rad(Si)
+reference:
+  value: 22.13
+  uncertainty: 0.07
+  source: thomsen2022shields1
+  locator: "results table, UDOS 2: 'Modeled TID (Proton (p) & Electron (e)) (Rad (Si))' = 21.77 p + 0.36 e = 22.13"
+  status: CONFIRMED
+  note: "Verified against the PDF by the main agent (2026-10-06). The source's model: AP8 AE8 trapped belts plus SOLPRO (King) solar protons, NOVICE shielding approximation, infinite slab."
+tolerance:
+  kind: factor
+  value: 1.5
+  rationale: >-
+    Design choice. The AP8/AE8 epoch (min vs max) and the SOLPRO share are not stated in the source, and NOVICE's
+    slab treatment differs from SHIELDOSE-2. A factor of 1.5 still separates 'our code reproduces their model'
+    from the 2.05-2.56x gap between their model and the measurement (radiation-shields1-slab-al-*).
+notes: >-
+  Same-model companion to radiation-shields1-slab-al-3gcm2 (Phase 1 extension E2, expert-skeptic gap 7). If this
+  case passes and the physics case misses, the residual is attributable to the AP8/AE8 environment or a missing
+  population, not to our transport code. The proton share is 21.77 of 22.13 rad(Si); SOLPRO solar protons may sit
+  inside it, so a low miss here could be the excluded SOLPRO term.
