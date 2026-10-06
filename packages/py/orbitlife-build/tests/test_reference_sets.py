@@ -108,6 +108,8 @@ def test_repository_reference_sets_load_and_cite_known_sources() -> None:
     )
     assert len(sets.missions.missions) >= 6
     assert len(sets.devices.devices) >= 6
+    assert sets.workloads is not None
+    assert len(sets.workloads.workloads) >= 3
     no_sel = [
         m
         for d in sets.devices.devices
