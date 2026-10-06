@@ -247,3 +247,9 @@ def test_invalid_case_file_error_names_the_file(tmp_path: Path) -> None:
     (tmp_path / "broken.yaml").write_text(yaml.safe_dump(_case(id="Bad Id With Spaces")))
     with pytest.raises(ValueError, match=r"broken\.yaml"):
         load_cases(tmp_path, BIB)
+
+
+def test_yaml_syntax_error_names_the_file(tmp_path: Path) -> None:
+    (tmp_path / "typo.yaml").write_text('id: "unclosed\ntitle: x\n')
+    with pytest.raises(ValueError, match=r"typo\.yaml"):
+        load_cases(tmp_path, BIB)

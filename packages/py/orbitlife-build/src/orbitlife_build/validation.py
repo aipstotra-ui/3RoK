@@ -142,7 +142,7 @@ def load_cases(cases_dir: Path, bib_text: str) -> list[ValidationCase]:
     for path in sorted(paths):
         try:
             case = ValidationCase.model_validate(yaml.safe_load(path.read_text()))
-        except ValidationError as exc:
+        except (ValidationError, yaml.YAMLError) as exc:
             raise ValueError(f"{path}: invalid case file\n{exc}") from exc
         if case.reference.source not in keys:
             raise ValueError(f"{path}: source {case.reference.source!r} not in docs/refs.bib")
