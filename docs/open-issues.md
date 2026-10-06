@@ -68,6 +68,12 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **Archived real-time inputs** (RTSW, nowcast Kp, quicklook Dst) for 2022–2025: find a source, or the headline result must be labelled "definitive-input hindcast" (protocol §3.1).
 - **NOAA reader cases still to add:** a missing file and an amended (reissued) forecast. No real examples found yet.
 
+## Phase 1 exit gaps (validation-analyst, 2026-10-06)
+- **No SEL case with a published Weibull fit.** The TI cases use the square approximation. This leaves the Phase 2 exit criterion "SEL rates match CREME96 within a factor of 2 for the same Weibull parameters" untestable until a source is found.
+- **No beta-angle case.** The roadmap lists Orekit/GMAT eclipse *and* beta angle; only one (cylindrical) eclipse case exists.
+- **Tiangong-1 covers only the last ~29.7 days** of the "final year" in the roadmap.
+- **No machine-readable "expected FAIL" marker.** Once Phase 2 implements drag and radiation, the documented-miss cases (Starlink G4-7, Shields-1) will make `just validate` exit 1. This needs a decision from Aiden (or an ADR) before Phase 2.
+
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
 - GOES-R SGPS licence
