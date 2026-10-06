@@ -1,26 +1,43 @@
-# Reference devices (Phase 1). Sources: docs/research/phase1-devices.md.
-# Each device states TID, SEU (single-event effects incl. SEFI) and SEL evidence, or `no_data` with a reason.
-# Units: LET in MeV cm2/mg; cross-sections in cm2 per bit or per device as stated; TID in krad(Si).
-# `bound: lower` = the true value is at least this (e.g. "no SEL up to LET 60" -> SEL threshold >= 60).
+# Reference devices (Phase 1). Sources: docs/research/phase1-devices.md ("Full researcher rows").
+# Each device states TID, SEE (non-destructive single-event effects) and SEL evidence, or `no_data` with a reason.
+# Units: LET in MeV cm2/mg; cross-sections per bit or per device/chip as stated in `unit`; TID in krad(Si).
+# bound: lower = at least `value` ("no SEL up to LET 60" -> threshold >= 60); upper = at most `value`
+#        (SEL observed at LET 40 -> threshold <= 40); range = spread from value to value_max.
+# kind: measurement (test result) | rating (datasheet guarantee) | target (design goal).
 schemaVersion: 1
 devices:
   - id: tpu-v6e
     name: Google TPU v6e (Trillium), in-system with HBM
     kind: accelerator
+    note: >-
+      All SEE cross-sections are derived by the paper from dose per event with 1 rad ~ 7.9e6 p/cm2
+      (sigma ~ 1.27e-7 / D). Beam: 67 MeV protons degraded by ~1 mm Al, heatsink and PCB (not monoenergetic).
+      Test temperature and number of chips not stated.
     tid:
-      - {quantity: hbm_irregularity_onset_tid, value: 2, unit: krad(Si), conditions: "67 MeV protons (degraded spectrum), UC Davis CNL; HBM stress tests",
+      - {quantity: hbm_irregularity_onset_tid, effect: TID, value: 2, unit: krad(Si),
+         conditions: "67 MeV protons, degraded spectrum, UC Davis CNL; HBM-specific stress tests",
          source: aguera2025suncatcher, locator: "§2.3", status: CONFIRMED}
-      - {quantity: max_tid_without_hard_failure, value: 15, bound: lower, unit: krad(Si), conditions: "highest dose tested; single chip",
-         source: aguera2025suncatcher, locator: "§2.3", status: CONFIRMED, note: "Test limit, not a failure point"}
-    seu:
-      - {quantity: sdc_cross_section, value: 6.0e-9, bound: lower, unit: cm2/chip, conditions: "67 MeV protons; transformer workloads; logic + on-chip SRAM",
-         source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED, note: "Paper range 6e-9 to 9e-9 (14.4-20 rad/event)"}
-      - {quantity: sdc_cross_section, value: 9.0e-9, bound: upper, unit: cm2/chip, conditions: "as above",
+      - {quantity: max_tid_without_hard_failure, effect: TID, value: 15, bound: lower, unit: krad(Si),
+         conditions: "highest dose tested; single chip", source: aguera2025suncatcher, locator: "§2.3", status: CONFIRMED,
+         note: "Test limit, not a failure point"}
+    see:
+      - {quantity: sdc_dose_per_event, effect: SDC, value: 14.4, value_max: 20, bound: range, unit: rad(Si)/event,
+         conditions: "67 MeV protons, degraded spectrum; transformer end-to-end workloads; logic + on-chip SRAM",
          source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED}
-      - {quantity: hbm_uncorrectable_error_cross_section, value: 3.0e-9, unit: cm2/chip, conditions: "67 MeV protons; ~44 rad/event, 203 events",
+      - {quantity: sdc_cross_section, effect: SDC, value: 6.0e-9, value_max: 9.0e-9, bound: range, unit: cm2/chip,
+         conditions: "as above; derived with 7.9e6 p/cm2 per rad", source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED}
+      - {quantity: hbm_uncorrectable_dose_per_event, effect: UE, value: 44, unit: rad(Si)/event,
+         conditions: "67 MeV protons, degraded spectrum; 203 events", source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED,
+         note: "HBM correctable-error counts were not reliably available"}
+      - {quantity: hbm_uncorrectable_cross_section, effect: UE, value: 3.0e-9, unit: cm2/chip,
+         conditions: "as above; derived with 7.9e6 p/cm2 per rad", source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED,
+         note: "1.27e-7/44 = 2.9e-9; paper rounds to ~3e-9"}
+      - {quantity: sefi_dose_per_event, effect: SEFI, value: 5000, unit: rad(Si)/event,
+         conditions: "67 MeV protons, degraded spectrum; system crash, 1 per 5 krad per chip",
          source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED}
-      - {quantity: sefi_cross_section, value: 2.0e-11, unit: cm2/chip, conditions: "67 MeV protons; 1 crash per 5 krad",
-         source: aguera2025suncatcher, locator: "§4.3", status: CONFIRMED}
+      - {quantity: sefi_cross_section, effect: SEFI, value: 2.5e-11, unit: cm2/chip,
+         conditions: "as above; derived with 7.9e6 p/cm2 per rad", source: aguera2025suncatcher, locator: "§4.3", status: CORRECTED,
+         note: "Paper's own formula gives 1.27e-7/5000 = 2.5e-11; the paper rounds to ~2e-11 (physics-reviewer, PR #5)"}
     sel: {no_data: "Not reported in aguera2025suncatcher (searched; no mention of latchup)"}
 
   - id: ddr4-micron-8gb
@@ -28,67 +45,89 @@ devices:
     kind: dram
     part: MT40A512M16JY-075E AIT:B
     tid:
-      - {quantity: tid_step_with_first_failure, value: 99, unit: krad(Si), conditions: "Co-60, 180 rad/h, room temperature; 5 biased + 5 grounded",
-         source: dufour2022ddr4, locator: "§IV, Tab. XIV", status: CONFIRMED, note: "1 biased part over current at 99 krad and failed after anneal; others in spec"}
-    seu:
-      - {quantity: seu_weibull_let_threshold, value: 0.5, unit: MeV cm2/mg, conditions: "heavy ions, RADEF, die thinned ~75 um, room temperature",
+      - {quantity: tid_failure_dose_part6, effect: TID, value: 99, bound: upper, unit: krad(Si),
+         conditions: "Co-60, 180 rad/h, room temperature; 10 parts (5 biased static, 5 grounded)",
+         source: dufour2022ddr4, locator: "§IV, Tab. XIV", status: CONFIRMED,
+         note: "Biased part 6 drew excess current at the 99 krad step and failed after a 168 h anneal, so its failure dose is at most 99. Previous passing step not in the research. Other biased parts stayed in spec."}
+    see:
+      - {quantity: seu_weibull_let_threshold, effect: SEU, value: 0.5, unit: MeV cm2/mg,
+         conditions: "heavy ions, RADEF, die thinned ~75 um, room temperature, nominal VDD, DDR4-2666",
          source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED, note: "Weibull W and s not reported"}
-      - {quantity: seu_saturated_cross_section_static, value: 1.14e-10, unit: cm2/bit, conditions: "as above",
-         source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED}
-      - {quantity: seu_saturated_cross_section_dynamic, value: 4.49e-11, unit: cm2/bit, conditions: "as above, DDR4-2666",
-         source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED}
-      - {quantity: sefi_cross_section_dynamic, value: 2.75e-5, unit: cm2/device, conditions: "Xe, LET 60.88",
-         source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED, note: "Researcher conversion: 28 events / 1.02e6 ions/cm2"}
+      - {quantity: seu_saturated_cross_section_static, effect: SEU, value: 1.14e-10, unit: cm2/bit,
+         conditions: "as above, static pattern", source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED}
+      - {quantity: seu_saturated_cross_section_dynamic, effect: SEU, value: 4.49e-11, unit: cm2/bit,
+         conditions: "as above, dynamic test", source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED}
+      - {quantity: sefi_cross_section_dynamic, effect: SEFI, value: 2.75e-5, unit: cm2/device,
+         conditions: "Xe, LET 60.88, dynamic", source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED,
+         note: "Researcher conversion: 28 events / 1.02e6 ions/cm2"}
+      - {quantity: sefi_cross_section_static, effect: SEFI, value: 1.96e-5, unit: cm2/device,
+         conditions: "Xe, LET 60.88, static", source: dufour2022ddr4, locator: "Tab. XII-XIII", status: CONFIRMED,
+         note: "Researcher conversion: 19 events / 9.71e5 ions/cm2"}
     sel:
-      - {quantity: sel_let_threshold, value: 60, bound: lower, unit: MeV cm2/mg, conditions: "no SEL; 95 C, VDDmax, 1e7 ions/cm2, 3 parts",
-         source: dufour2022ddr4, locator: "Tab. XII-XIII, p. 7", status: CONFIRMED, note: "Current steps under Xe needed power cycle; authors call them SEFI, not pure SEL"}
+      - {quantity: sel_let_threshold, effect: SEL, value: 60, bound: lower, unit: MeV cm2/mg,
+         conditions: "no SEL up to LET 60; 95 C, VDDmax, 1e7 ions/cm2, 3 parts",
+         source: dufour2022ddr4, locator: "Tab. XII-XIII, p. 7", status: CONFIRMED,
+         note: "Current steps under Xe needed a power cycle; authors call them SEFI, not pure SEL"}
 
   - id: ddr4-skhynix-8gb
     name: SK hynix DDR4 8 Gb
     kind: dram
     part: H5AN8G6NCJR-VKI
     tid:
-      - {quantity: tid_without_failure, value: 100, bound: lower, unit: krad(Si), conditions: "Co-60",
+      - {quantity: tid_without_failure, effect: TID, value: 100, bound: lower, unit: krad(Si), conditions: "Co-60",
          source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
-    seu:
-      - {quantity: seu_weibull_let_threshold, value: 0.5, unit: MeV cm2/mg, conditions: "heavy ions, RADEF, room temperature",
+    see:
+      - {quantity: seu_weibull_let_threshold, effect: SEU, value: 0.5, unit: MeV cm2/mg,
+         conditions: "heavy ions, RADEF, room temperature, nominal VDD",
          source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED, note: "Weibull W and s not reported; MBU from LET 8.3"}
-      - {quantity: seu_saturated_cross_section_static, value: 8.5e-11, unit: cm2/bit, conditions: "as above",
-         source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
-      - {quantity: seu_saturated_cross_section_dynamic, value: 2.3e-11, unit: cm2/bit, conditions: "as above",
-         source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
+      - {quantity: seu_saturated_cross_section_static, effect: SEU, value: 8.5e-11, unit: cm2/bit,
+         conditions: "as above, static", source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
+      - {quantity: seu_saturated_cross_section_dynamic, effect: SEU, value: 2.3e-11, unit: cm2/bit,
+         conditions: "as above, dynamic", source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
+      - {quantity: sefi_cross_section_dynamic, effect: SEFI, value: 7.5e-6, unit: cm2/device,
+         conditions: "Xe, LET 62, dynamic", source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED,
+         note: "Researcher conversion: count/fluence"}
+      - {quantity: sefi_cross_section_static, effect: SEFI, value: 2.4e-6, unit: cm2/device,
+         conditions: "Xe, LET 62, static", source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED,
+         note: "Researcher conversion: count/fluence"}
     sel:
-      - {quantity: sel_let_threshold, value: 60, bound: lower, unit: MeV cm2/mg, conditions: "no SEL at 125 C",
-         source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
+      - {quantity: sel_let_threshold, effect: SEL, value: 60, bound: lower, unit: MeV cm2/mg,
+         conditions: "no SEL up to LET 60 at 125 C", source: dufour2022ddr4, locator: "Tab. VIII-IX", status: CONFIRMED}
 
   - id: ddr4-teledyne-radtol
     name: Teledyne e2v DDR4T04G72M (radiation-tolerant DDR4)
     kind: dram
     part: DDR4T04G72M
+    note: "Figures from a distributor copy of manufacturer data; die source not stated"
     tid:
-      - {quantity: tid_target, value: 100, unit: krad(Si), conditions: "manufacturer target, not a test result",
+      - {quantity: tid_target, effect: TID, kind: target, value: 100, unit: krad(Si), conditions: "manufacturer target, not a test result",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
-    seu:
-      - {quantity: seu_let_threshold, value: 8.19, unit: MeV cm2/mg, conditions: "heavy ions",
+    see:
+      - {quantity: seu_let_threshold, effect: SEU, value: 8.19, unit: MeV cm2/mg, conditions: "heavy ions",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
-      - {quantity: seu_cross_section_at_let_60.88, value: 5.55e-12, unit: cm2/bit, conditions: "heavy ions, LET 60.88",
+      - {quantity: seu_cross_section, effect: SEU, value: 5.55e-12, unit: cm2/bit, conditions: "heavy ions, LET 60.88",
+         source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
+      - {quantity: sefi_let_threshold, effect: SEFI, value: 2.6, unit: MeV cm2/mg, conditions: "heavy ions",
+         source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
+      - {quantity: sefi_cross_section, effect: SEFI, value: 2.22e-4, unit: cm2/device, conditions: "heavy ions, LET 60.88",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
     sel:
-      - {quantity: sel_let_threshold, value: 60.88, bound: lower, unit: MeV cm2/mg, conditions: "temperature not stated",
+      - {quantity: sel_let_threshold, effect: SEL, value: 60.88, bound: lower, unit: MeV cm2/mg,
+         conditions: "no SEL up to LET 60.88; temperature not stated",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
 
   - id: ddr5-generic
     name: DDR5 SDRAM (generic)
     kind: dram
     tid: {no_data: "No published TID result found"}
-    seu: {no_data: "Proton SEE measured in li2025ddr5 but numbers are paywalled (UNVERIFIED); no heavy-ion data found"}
+    see: {no_data: "Proton SEE measured in li2025ddr5 but numbers are paywalled (UNVERIFIED); no heavy-ion data found"}
     sel: {no_data: "No published SEL result found"}
 
   - id: hbm3-generic
     name: HBM3 stack (generic)
     kind: hbm
     tid: {no_data: "No standalone HBM2/2e/3 data found; only in-system TPU v6e results (see tpu-v6e)"}
-    seu: {no_data: "As above"}
+    see: {no_data: "As above"}
     sel: {no_data: "As above"}
 
   - id: jetson-tx2
@@ -96,46 +135,71 @@ devices:
     kind: soc
     node_nm: 20
     tid: {no_data: "No TID test. One of two parts failed catastrophically at ~60 rad(Si) during a proton SEE run, cause pending (wyrwas2019tx2)"}
-    seu:
-      - {quantity: seu_cross_section_average, value: 1.02e-9, unit: cm2/device, conditions: "200 MeV protons, MGH, Jun 2019, 2 parts",
-         source: wyrwas2019tx2, locator: "§6, Tab. 2", status: CONFIRMED, note: "Range 2.5e-10 to 4.17e-9; SEFI in every run"}
+    see:
+      - {quantity: seu_cross_section_average, effect: SEU, value: 1.02e-9, unit: cm2/device,
+         conditions: "200 MeV protons, MGH, Jun 2019, 2 parts; die ~25 C above room temperature at full load",
+         source: wyrwas2019tx2, locator: "§6, Tab. 2", status: CONFIRMED, note: "Range 2.50e-10 to 4.17e-9; SEFI in every run, each needing a power cycle"}
     sel:
-      - {quantity: sel_let_threshold, value: 37, bound: lower, unit: MeV cm2/mg, conditions: "no SEL at LET 37 up to 80 C, 3 facilities",
-         source: coelho2025tx2, locator: "abstract", status: CONFIRMED, note: "Full text not accessed"}
+      - {quantity: sel_let_threshold, effect: SEL, value: 37, bound: lower, unit: MeV cm2/mg,
+         conditions: "no SEL up to LET 37, up to 80 C, 3 facilities",
+         source: coelho2025tx2, locator: "abstract (full text not accessed)", status: CONFIRMED}
 
   - id: jetson-xavier-nx
     name: NVIDIA Jetson Xavier NX (12 nm)
     kind: soc
     node_nm: 12
     tid: {no_data: "No TID result found"}
-    seu:
-      - {quantity: sefi_cross_section_os_crash, value: 3.97e-9, bound: lower, unit: cm2/device, conditions: "125 and 200 MeV protons, Jul 2021",
-         source: cannon2023xavier, locator: "Tab. 2", status: CONFIRMED, note: "Range 3.97e-9 to 6.71e-9"}
-      - {quantity: sefi_cross_section_os_crash, value: 6.71e-9, bound: upper, unit: cm2/device, conditions: "as above",
-         source: cannon2023xavier, locator: "Tab. 2", status: CONFIRMED}
+    see:
+      - {quantity: sefi_cross_section_os_crash_proton, effect: SEFI, value: 3.97e-9, value_max: 6.71e-9, bound: range, unit: cm2/device,
+         conditions: "125 and 200 MeV protons, Northwestern Medicine Chicago Proton Center, Jul 2021",
+         source: cannon2023xavier, locator: "Tab. 2", status: CONFIRMED,
+         note: "Range across both energies; not resolved by energy in the research. Data-error sigma are upper limits (0 events), ~5.7e-10 to 9.6e-10"}
+      - {quantity: sefi_cross_section_heavy_ion, effect: SEFI, value: 2.95e-7, unit: cm2/device,
+         conditions: "heavy ions at LET 0.106, TAMU K500 15 MeV/u, thinned die, DCNN without SMM",
+         source: cannon2023xavier, locator: "Tab. 5", status: CONFIRMED}
+      - {quantity: sefi_cross_section_heavy_ion, effect: SEFI, value: 4.48e-3, unit: cm2/device,
+         conditions: "heavy ions at LET 40.4, TAMU K500 15 MeV/u, thinned die, DCNN without SMM",
+         source: cannon2023xavier, locator: "Tab. 5", status: CONFIRMED, note: "No Weibull fit given"}
     sel:
-      - {quantity: destructive_sel_observed_at_let, value: 40, unit: MeV cm2/mg, conditions: "heavy ions, TAMU, thinned die heated up to 100 C",
-         source: cannon2023xavier, locator: "§V, p. 8", status: CONFIRMED, note: "Conflicts with an earlier unthinned test; authors say more work needed"}
+      - {quantity: sel_let_threshold, effect: SEL, value: 40, bound: upper, unit: MeV cm2/mg,
+         conditions: "destructive SEL observed at LET 40; heavy ions, TAMU, thinned die heated up to 100 C",
+         source: cannon2023xavier, locator: "§V, p. 8", status: CONFIRMED,
+         note: "Second ~2 A spike then persistent failure. Conflicts with an earlier unthinned, pulsed-beam test; authors say more work needed"}
 
   - id: jetson-orin-nx
     name: NVIDIA Jetson Orin NX (7 nm)
     kind: soc
     node_nm: 7
+    note: "480 MeV protons, TRIUMF BL1B; temperature not stated"
     tid: {no_data: "No TID result found"}
-    seu:
-      - {quantity: soc_seu_cross_section_15w, value: 3.90e-9, unit: cm2/device, conditions: "480 MeV protons, TRIUMF, 15 W mode",
+    see:
+      - {quantity: soc_seu_cross_section_15w, effect: SEU, value: 3.90e-9, unit: cm2/device, conditions: "480 MeV protons, 15 W mode",
          source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
-      - {quantity: gpu_seu_cross_section, value: 3.52e-10, unit: cm2/device, conditions: "as above",
+      - {quantity: soc_seu_cross_section_10w, effect: SEU, value: 4.43e-9, unit: cm2/device, conditions: "480 MeV protons, 10 W mode",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: soc_seu_cross_section_below_10w, effect: SEU, value: 2.50e-9, unit: cm2/device, conditions: "480 MeV protons, <10 W mode",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: soc_sefi_cross_section_15w, effect: SEFI, value: 1.59e-9, unit: cm2/device, conditions: "480 MeV protons, 15 W mode",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: soc_sefi_cross_section_10w, effect: SEFI, value: 1.51e-9, unit: cm2/device, conditions: "480 MeV protons, 10 W mode",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: soc_sefi_cross_section_below_10w, effect: SEFI, value: 6.81e-10, unit: cm2/device, conditions: "480 MeV protons, <10 W mode",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: gpu_seu_cross_section, effect: SEU, value: 3.52e-10, unit: cm2/device, conditions: "480 MeV protons",
+         source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
+      - {quantity: gpu_sefi_cross_section, effect: SEFI, value: 6.54e-10, unit: cm2/device, conditions: "480 MeV protons",
          source: rodriguezferrandez2024orin, locator: "Tab. II-V", status: CONFIRMED}
     sel:
-      - {quantity: suspected_sel_current_surges, value: 3, unit: count, conditions: "480 MeV protons; recovered by power cut; source (module vs carrier) unidentified",
-         source: rodriguezferrandez2024orin, locator: "§ results", status: CONFIRMED, note: "Heavy-ion SEL compared in rodriguezferrandez2025jetsonhi but values not accessible"}
+      - {quantity: suspected_sel_current_surges, effect: SEL, value: 3, unit: count,
+         conditions: "480 MeV protons; surges in the POW2 region recovered after the power meter cut power",
+         source: rodriguezferrandez2024orin, locator: "results section", status: CONFIRMED,
+         note: "Source (module vs carrier regulator) not identified. Heavy-ion SEL compared in rodriguezferrandez2025jetsonhi but values not accessible"}
 
   - id: datacenter-gpu-generic
     name: Datacenter GPU (A100/H100 class, generic)
     kind: gpu
     tid: {no_data: "No public TID data"}
-    seu: {no_data: "Neutron studies publish normalized FIT only (dossantos2021due); no absolute proton or heavy-ion rates found"}
+    see: {no_data: "Neutron studies publish normalized FIT only (dossantos2021due); no absolute proton or heavy-ion rates found"}
     sel: {no_data: "No public SEL data"}
 
   - id: radhard-sram-ut8rxm39
@@ -143,11 +207,13 @@ devices:
     kind: sram
     part: UT8R4M39
     tid:
-      - {quantity: tid_rating, value: 100, bound: lower, unit: krad(Si), conditions: "datasheet rating",
+      - {quantity: tid_rating, effect: TID, kind: rating, value: 100, bound: lower, unit: krad(Si), conditions: "datasheet rating",
          source: frontgrade_ut8rxm39, locator: "Features", status: CONFIRMED}
-    seu:
-      - {quantity: seu_rate_geo_adams90, value: 7.3e-7, unit: errors/bit-day, conditions: "GEO, Adams 90% worst case, 100 mil Al",
+    see:
+      - {quantity: seu_rate_geo_adams90, effect: SEU, kind: rating, value: 7.3e-7, unit: errors/bit-day,
+         conditions: "environment-specific: GEO, Adams 90% worst case, 100 mil Al; must not be applied to LEO",
          source: frontgrade_ut8rxm39, locator: "Table 3", status: CONFIRMED, note: "No LEO rate or Weibull parameters given"}
     sel:
-      - {quantity: sel_immune_up_to_let, value: 110, bound: lower, unit: MeV cm2/mg, conditions: "test temperature not stated",
+      - {quantity: sel_let_threshold, effect: SEL, kind: rating, value: 110, bound: lower, unit: MeV cm2/mg,
+         conditions: "no SEL up to LET 110 (datasheet: SEL immune); test temperature not stated",
          source: frontgrade_ut8rxm39, locator: "Features", status: CONFIRMED}

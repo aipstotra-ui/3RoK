@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Annotated, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from orbitlife_build.validation import RefStatus, bib_keys
 
@@ -31,6 +31,7 @@ class SourcedValue(_Strict):
     source: _NON_EMPTY
     locator: _NON_EMPTY
     status: RefStatus
+    computed_with: str | None = None  # set when the value was derived, not read from the source
     note: str | None = None
 
 
@@ -42,6 +43,16 @@ class DesignChoice(_Strict):
 
 
 class Mission(_Strict):
+    """A reference orbit.
+
+    Definitions (physics-reviewer, PR #5):
+    - altitude_km: mean semi-major axis minus Earth's equatorial radius 6378.137 km, for a circular
+      orbit in mean (Brouwer/SGP4-mean) elements. Not geodetic height, which varies ~21 km
+      around a near-polar orbit.
+    - inclination_deg: mean inclination.
+    - ltan_h: mean local time of the ascending node, in hours.
+    """
+
     id: _ID
     name: _NON_EMPTY
     altitude_km: SourcedValue | DesignChoice
@@ -55,18 +66,38 @@ class MissionSet(_Strict):
     missions: list[Mission]
 
 
+Effect = Literal["TID", "SEU", "MBU", "SEFI", "SDC", "DUE", "UE", "STUCK_BIT", "SEL"]
+
+
 class Measurement(_Strict):
-    """One published test result. `bound` says whether value is exact, a lower or an upper limit."""
+    """One published result.
+
+    bound: "equal" (value as stated), "lower" (true value is at least `value`), "upper" (at most
+    `value`), or "range" (spread from `value` to `value_max` across modes or conditions).
+    kind: "measurement" (test result), "rating" (datasheet guarantee) or "target" (design goal).
+    """
 
     quantity: _NON_EMPTY
+    effect: Effect
+    kind: Literal["measurement", "rating", "target"] = "measurement"
     value: _FINITE
-    bound: Literal["equal", "lower", "upper"] = "equal"
+    value_max: _FINITE | None = None
+    bound: Literal["equal", "lower", "upper", "range"] = "equal"
     unit: _NON_EMPTY
     conditions: _NON_EMPTY
     source: _NON_EMPTY
     locator: _NON_EMPTY
     status: RefStatus
     note: str | None = None
+
+    @model_validator(mode="after")
+    def _range_consistent(self) -> Measurement:
+        if self.bound == "range":
+            if self.value_max is None or self.value_max <= self.value:
+                raise ValueError("a range needs value_max greater than value")
+        elif self.value_max is not None:
+            raise ValueError("value_max is only allowed with bound: range")
+        return self
 
 
 class NoData(_Strict):
@@ -85,9 +116,24 @@ class Device(_Strict):
     part: str | None = None
     node_nm: _FINITE | None = None
     tid: EffectEvidence
-    seu: EffectEvidence
+    see: EffectEvidence  # non-destructive SEE: SEU, MBU, SEFI, SDC, DUE, UE, stuck bits
     sel: EffectEvidence
     note: str | None = None
+
+    @model_validator(mode="after")
+    def _effects_in_right_bucket(self) -> Device:
+        allowed: dict[str, set[str]] = {
+            "tid": {"TID"},
+            "sel": {"SEL"},
+            "see": {"SEU", "MBU", "SEFI", "SDC", "DUE", "UE", "STUCK_BIT"},
+        }
+        for bucket, effects in allowed.items():
+            evidence = getattr(self, bucket)
+            if isinstance(evidence, list):
+                for m in evidence:
+                    if m.effect not in effects:
+                        raise ValueError(f"{self.id}: effect {m.effect} not allowed in {bucket}")
+        return self
 
 
 class DeviceSet(_Strict):
@@ -107,7 +153,7 @@ def _sources(sets: ReferenceSets) -> Iterable[tuple[str, str]]:
             if isinstance(value, SourcedValue):
                 yield m.id, value.source
     for d in sets.devices.devices:
-        for evidence in (d.tid, d.seu, d.sel):
+        for evidence in (d.tid, d.see, d.sel):
             if isinstance(evidence, list):
                 for meas in evidence:
                     yield d.id, meas.source

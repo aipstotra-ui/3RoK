@@ -27,6 +27,7 @@ def _mission(**overrides: object) -> dict[str, object]:
 def _meas(**overrides: object) -> dict[str, object]:
     m: dict[str, object] = {
         "quantity": "sel_let_threshold",
+        "effect": "SEL",
         "value": 60.0,
         "bound": "lower",
         "unit": "MeV cm2/mg",
@@ -45,7 +46,9 @@ def _device(**overrides: object) -> dict[str, object]:
         "name": "Test DRAM",
         "kind": "dram",
         "tid": {"no_data": "not tested"},
-        "seu": [_meas(quantity="seu_weibull_let_threshold", value=0.5, bound="equal")],
+        "see": [
+            _meas(quantity="seu_weibull_let_threshold", effect="SEU", value=0.5, bound="equal")
+        ],
         "sel": [_meas()],
     }
     d.update(overrides)
@@ -105,5 +108,46 @@ def test_repository_reference_sets_load_and_cite_known_sources() -> None:
     )
     assert len(sets.missions.missions) >= 6
     assert len(sets.devices.devices) >= 6
-    for device in sets.devices.devices:
-        assert device.sel is not None
+    no_sel = [
+        m
+        for d in sets.devices.devices
+        if isinstance(d.sel, list)
+        for m in d.sel
+        if m.conditions.lower().startswith("no sel")
+    ]
+    assert no_sel, "expected some 'no SEL up to LET X' entries"
+    for m in no_sel:
+        assert m.bound == "lower", f"'no SEL' must be a lower bound on the threshold: {m}"
+
+
+def test_effect_must_match_its_bucket() -> None:
+    with pytest.raises(ValidationError, match="sel"):
+        DeviceSet.model_validate(
+            {"schemaVersion": 1, "devices": [_device(sel=[_meas(effect="SEFI")])]}
+        )
+    with pytest.raises(ValidationError, match="see"):
+        DeviceSet.model_validate(
+            {"schemaVersion": 1, "devices": [_device(see=[_meas(effect="TID")])]}
+        )
+
+
+def test_range_needs_value_max_above_value() -> None:
+    ok = _meas(effect="SEL", bound="range", value=1.0, value_max=2.0)
+    DeviceSet.model_validate({"schemaVersion": 1, "devices": [_device(sel=[ok])]})
+    for bad in (
+        _meas(bound="range", value=2.0, value_max=1.0),
+        _meas(bound="range", value=1.0),
+        _meas(bound="equal", value=1.0, value_max=2.0),
+    ):
+        with pytest.raises(ValidationError):
+            DeviceSet.model_validate({"schemaVersion": 1, "devices": [_device(sel=[bad])]})
+
+
+def test_rating_kind_is_accepted_and_defaults_to_measurement() -> None:
+    d = DeviceSet.model_validate(
+        {"schemaVersion": 1, "devices": [_device(sel=[_meas(kind="rating")])]}
+    ).devices[0]
+    assert isinstance(d.sel, list)
+    assert d.sel[0].kind == "rating"
+    assert isinstance(d.see, list)
+    assert d.see[0].kind == "measurement"
