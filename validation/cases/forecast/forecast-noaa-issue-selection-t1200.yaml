@@ -9,10 +9,11 @@ inputs:
 quantity: NOAA Kp used as the baseline for this T and block
 unit: "1"
 reference:
-  value: 5.67
+  value: 5.666667
   source: noaa_ngdc_3day_archive
   locator: "2025/10/202510011230three_day_forecast.txt (':Issued: 2025 Oct 01 12:30 UTC'), row 21-00UT, column Oct 01"
   status: CONFIRMED
+  computed_with: "Printed value 5.67 converted to exact thirds per protocol §4.4: round(3 x 5.67)/3 = 17/3 = 5.666667"
 tolerance:
   kind: abs
   value: 0.001

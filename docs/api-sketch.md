@@ -99,11 +99,11 @@ def tid_dose_rad_si(
 ```python
 # orbitlife.forecast
 def noaa_3day_kp(issue_utc: str, block_start_utc: str) -> float:
-    """NOAA SWPC 3-day forecast Kp (in thirds) for one 3-hour block, from the archived text product."""
+    """NOAA SWPC 3-day forecast Kp for one 3-hour block, exactly as printed (two decimals), from the archived text product."""
 
 
 def noaa_baseline_kp(issue_time_utc: str, block_start_utc: str) -> float:
-    """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min."""
+    """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min, converted to exact thirds."""
 ```
 
 ## Top-level API

@@ -1,6 +1,6 @@
 # Forecast evaluation protocol v1 (pre-registered, Phase 1)
 
-This protocol fixes, **before any model exists**, how orbitlife's space-weather forecasts will be scored. v1 incorporates the ml-auditor review of PR #12 (7 BLOCKERs, 8 SHOULD-FIX).
+This protocol fixes, **before any model exists**, how orbitlife's space-weather forecasts will be scored. v1 incorporates the ml-auditor review of PR #12 (round 1: 7 BLOCKERs, 8 SHOULD-FIX; round 2: 5 clarifications).
 
 Sources: `docs/research/phase1-forecast.md`. Values marked `assumption` are design choices pending a sourced number (docs/open-issues.md).
 
@@ -12,6 +12,8 @@ Sources: `docs/research/phase1-forecast.md`. Values marked `assumption` are desi
 ## 1. Targets and horizons
 - **Kp:** GFZ definitive Kp (`matzka2021kpdata`), in thirds.
 - **Dst:** WDC Kyoto. Use final where available, otherwise provisional. Quicklook is never used as truth.
+  - Hours with no final or provisional value are **dropped** from Dst scoring, and the count is reported.
+  - The truth version (final or provisional) is recorded per period. Train is mostly final; test may be provisional.
 - **Issue times T:** every 3 h on block boundaries (00, 03, …, 21 UT).
 - **Horizons:**
   - Kp at horizon h ∈ {3, 6, 12, 24} h is the Kp of the block **[T + h − 3 h, T + h)**. So +3 h is the block that starts at T.
@@ -41,7 +43,8 @@ Every input is defined by its **availability time** (when that version of the va
 
    If archived real-time data cannot be obtained for training and test, the headline result is labelled **"definitive-input hindcast"**. In that case a **degraded-input sensitivity run** is mandatory (quicklook-like Dst, nowcast-like Kp, RTSW-like gaps and noise), and **no claim of operational superiority over NOAA** may be made from definitive-input scores.
 2. **Solar wind.** Live RTSW is time-shifted with **the same method OMNI uses** (`omniweb_data_doc`, "magnetosphere-arrival times"), so training and serving inputs agree. Features then use shifted times ≤ T − 1 h, because OMNI rows cover [t, t + 1 h).
-   - The RTSW publication latency is added to the availability time. It is UNVERIFIED; `assumption` until sourced: 1 h.
+   - Formula: **availability time = shifted row end + RTSW latency**, and a row is usable if its availability time ≤ T.
+   - The RTSW latency is UNVERIFIED; `assumption` until sourced: 1 h.
 3. **Kp.** Only blocks whose nowcast was **published** before T. GFZ nowcast latency is UNVERIFIED; `assumption` until sourced: exclude the most recent completed block, so the newest usable block ends at T − 3 h.
 4. **Dst.** Only hours whose real-time value was published before T. Kyoto quicklook latency is UNVERIFIED; `assumption` until sourced: 2 h.
 5. **Leakage property test** (required before any score):
@@ -72,16 +75,21 @@ Every input is defined by its **availability time** (when that version of the va
 - **Point** (the median): MAE and RMSE. **The headline NOAA comparison is point-vs-point MAE/RMSE** (§4.4).
 - **Events:**
   - Thresholds: Kp ≥ 5.0, Kp ≥ 7.0, Dst ≤ −50 nT, Dst ≤ −100 nT.
-  - Event probability is read from the forecast CDF, built by linear interpolation between sorted quantiles, with flat tails beyond 0.05 and 0.95.
+  - Event probability is read from the forecast CDF, built by linear interpolation between sorted quantiles.
+  - Tails: F(x) = 0.05 for x < q0.05 and F(x) = 0.95 for x > q0.95. That puts a 5% floor on tail-event probabilities, and the same rule applies to every model.
   - The **decision threshold** for POD, FAR, CSI and HSS is fixed on the **early-stop slice** (the value that maximises HSS there) and then frozen.
   - The Brier score uses the probability directly.
   - Event counts are always reported next to the scores.
 - **Skill:** 1 − mean(S_model) / mean(S_baseline).
 - **Uncertainty:** paired moving-block bootstrap with 1-month blocks and B = 2000, with identical resamples for the model and each baseline. Report 3 significant figures.
-- **Daily maximum Kp** (for SWPC-style comparison): derived from 1000 sample paths drawn from the per-block forecast distributions with an empirical copula fitted on train. Compared against **NOAA's own daily maximum on the same 2022–25 test period**. SWPC's 2013 numbers are context only (different period and solar cycle).
+- **Daily maximum Kp** (for SWPC-style comparison):
+  - Built from the **00 UT issue**, using all eight 3-hourly horizons 3, 6, …, 24 h, which cover that UT day (a separate product from the 4 headline horizons).
+  - Derived from 1000 sample paths drawn from the per-block forecast distributions, with an empirical copula fitted on train.
+  - Compared against **NOAA day 1** of the 00:30 issue for the same UT day, on the same 2022–25 test period. SWPC's 2013 numbers are context only (different period and solar cycle).
 
 ## 6. Test-set discipline and the score log
-- The test split is scored **once for headline purposes**, in total, not once per model version.
+- The test split is scored **once for headline purposes** per (target, test split), in total, not once per model version. Kp and Dst have separate headlines.
+- A **look** is any computation that combines a candidate model's output with test-period targets, including partial scoring, storm plots, and debugging on test targets.
 - Every later evaluation on test is a logged **"test reused (look n)"** with a running count. It may be reported, but it can never be the headline.
 - Each `validation/score-log.md` row records: date, model, protocol commit hash, look number, model artifact sha256 (the ONNX file), metrics file, and commit.
 - **Parity:** only the scored artifact (by sha256) may ship. TypeScript features must match Python golden fixtures built from **live-format inputs** (RTSW, nowcast Kp, quicklook Dst).
