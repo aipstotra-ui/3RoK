@@ -1,0 +1,38 @@
+# Reference missions (Phase 1). Every validation case and case study uses these orbits.
+# Sources: docs/research/phase1-orbit-drag.md. Statuses come from the researcher.
+schemaVersion: 1
+missions:
+  - id: starlink-shell1
+    name: Starlink shell 1 (authorized)
+    altitude_km: {value: 550, source: fcc2021spacex_mod3, locator: "¶4, fn 17", status: CONFIRMED,
+                  note: "Authorized ±30 km. 2026 news reports a planned lowering to ~480 km (UNVERIFIED)."}
+    inclination_deg: {value: 53, source: fcc2021spacex_mod3, locator: "¶4", status: CONFIRMED}
+
+  - id: starlink-polar
+    name: Starlink polar shell
+    altitude_km: {value: 560, source: fcc2021spacex_mod3, locator: "¶4, ¶6", status: CONFIRMED,
+                  note: "Must stay below 580 km."}
+    inclination_deg: {value: 97.6, source: fcc2021spacex_mod3, locator: "¶4, ¶6", status: CONFIRMED}
+
+  - id: sso-dawn-dusk-600
+    name: Dawn-dusk sun-synchronous, 600 km
+    altitude_km: {value: 600, design_choice: "Typical LEO compute-constellation SSO altitude; brackets the Starlink polar shell"}
+    inclination_deg: {value: 97.788, source: boain2004sso, locator: "Eq. 1 constants; value computed by researcher with mu = 398600.4418 km3/s2", status: UNVERIFIED}
+    ltan_h: {value: 6.0, design_choice: "Dawn-dusk orbit: near-continuous sunlight, the case Suncatcher-style designs favour"}
+
+  - id: sso-dawn-dusk-800
+    name: Dawn-dusk sun-synchronous, 800 km
+    altitude_km: {value: 800, design_choice: "Higher SSO: longer drag life, more trapped radiation; tests the trade-off"}
+    inclination_deg: {value: 98.603, source: boain2004sso, locator: "Eq. 1 constants; value computed by researcher with mu = 398600.4418 km3/s2", status: UNVERIFIED}
+    ltan_h: {value: 6.0, design_choice: "Dawn-dusk, as above"}
+
+  - id: iss
+    name: International Space Station
+    altitude_km: {value: 415, source: nasa2024issdeorbit, locator: "p. 3", status: CONFIRMED,
+                  note: "Kept between 330 and 425 km by reboosts (nasa2017ssp51071 §3.0)."}
+    inclination_deg: {value: 51.6, source: nasa2017ssp51071, locator: "§3.0, Fig. 3.0-2", status: CONFIRMED}
+
+  - id: oneweb-like
+    name: OneWeb-like high LEO
+    altitude_km: {value: 1200, source: fcc2022oneweb, locator: "¶2 (approximate altitude)", status: CONFIRMED}
+    inclination_deg: {value: 87.9, source: fcc2022oneweb, locator: "¶6", status: CONFIRMED}
