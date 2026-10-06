@@ -1,0 +1,39 @@
+id: radiation-tid-sso800-dawndusk-5yr-20mm
+title: 5-year TID behind 20.0 mm Al, 800 km dawn-dusk SSO (SPENVIS AP8/AE8 + ESP + SHIELDOSE-2)
+module: radiation
+check: implementation
+target: orbitlife.radiation.tid_dose_rad_si
+inputs:
+  altitude_km: 800.0            # mean a - 6378.137 km, circular
+  sun_synchronous: true
+  ltan_h: 6.0
+  start_epoch_utc: "2011-01-01T00:00:00Z"
+  duration_yr: 5.0
+  shielding_mm_al: 20.0
+  geometry: solid_sphere_center
+  target_material: si
+  trapped_proton_model: ap8min
+  trapped_electron_model: ae8max
+  solar_proton_model: esp_psychic
+  solar_proton_confidence: 0.80
+  sep_magnetic_shielding: spenvis_default   # Table 1: 'default'; SPENVIS mode not recoverable
+quantity: total ionizing dose over the mission
+unit: rad(Si)
+reference:
+  value: 1773
+  source: sinclair2013radiation
+  locator: "Table 1 (inputs), Table 3 (sectoring), text: SHIELDOSE-2 centre of Al spheres, silicon target"
+  status: CONFIRMED
+  computed_with: "Table 3: 0.39 krad x (1/0.22); fraction 22%, lens. The paper states each contributed dose = SHIELDOSE-2 total dose x fraction of sphere, so dividing recovers the full-sphere dose. Rounding of the published table: ±3.6%. Verified against the PDF by the main agent (2026-10-06)."
+tolerance:
+  kind: rel
+  value: 0.10
+  rationale: "Design choice of PR #9 (the roadmap sets no numeric target; an earlier draft cited one by mistake). 20 mm is beyond the 1-10 mm range where same-model agreement is usually tight, and the large SEP share there is sensitive to the cutoff model. Same models, so 10% is meant to catch implementation errors, not physics. Includes the published-table rounding (±3.6%) and differences in orbit sampling and SPENVIS version."
+notes: >-
+  Settings not recoverable from the source (record our choices as assumptions in Phase 2): geomagnetic field
+  model and epoch for AP8/AE8 B,L; SPENVIS SEP shielding mode; ESP solar-active-year counting for 2011-2016;
+  SHIELDOSE-2 vs -2Q; orbit sampling. GCR is not part of SHIELDOSE-2 TID. A single total can pass while species
+  errors cancel, so the validation report must break residuals down by species.
+
+  Mixed epochs (AP-8 solar minimum with AE-8 solar maximum) as chosen in the source. The total includes trapped
+  protons, trapped electrons (with bremsstrahlung) and ESP-PSYCHIC solar protons at 80% confidence.

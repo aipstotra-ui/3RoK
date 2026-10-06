@@ -212,6 +212,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - AP8/AE8 grid over altitude 300–1500 km × inclination 0–100° × shielding 0.5–20 mm Al × solar min/max (AP9/AE9 mean and 95th percentile optional if licensing allows)
   - GCR from ISO 15390 or Badhwar-O'Neill, with a geomagnetic cutoff that depends on Kp
   - SEP worst-day and worst-week percentiles from the event record
+  - ESP-PSYCHIC design-confidence SEP fluence (Xapsos et al.), needed by the SPENVIS dose-depth cases (added PR #9); research and an ADR before building
   - the SAA defined from the flux grid (one model, not three)
 - **Effects:**
   - TID behind shielding

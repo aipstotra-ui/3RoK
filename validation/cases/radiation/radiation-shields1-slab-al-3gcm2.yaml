@@ -1,0 +1,42 @@
+id: radiation-shields1-slab-al-3gcm2
+title: Shields-1 measured TID behind a 3.00 g/cm2 Al slab, 500 km / 85 deg (2019, solar minimum)
+module: radiation
+check: physics
+target: orbitlife.radiation.tid_dose_rad_si
+inputs:
+  altitude_km: 500.0
+  inclination_deg: 85.0
+  start_epoch_utc: "2018-12-16T00:00:00Z"   # launch date; the measured value is quoted per year
+  duration_yr: 1.0                           # Julian year (365.25 d)
+  geometry: slab_two_sided
+  shielding_g_cm2_al: 3.00                  # front: the sample slab (2 pi)
+  rear_shielding_g_cm2_al: 6.00              # rear: spacecraft behind the dosimeter (2 pi); the source's own back-slab assumption
+  target_material: si
+  trapped_proton_model: ap8min               # measurement at solar minimum
+  trapped_electron_model: ae8min
+  solar_proton_model: null                   # no >10 MeV >=10 pfu SEP event between 2017-09-10 and 2021-05-29 (noaa_sep_list, data-v0)
+  include_gcr: false                         # see notes
+quantity: total ionizing dose in one year
+unit: rad(Si)
+reference:
+  value: 73.6
+  uncertainty: 3.2
+  source: thomsen2022shields1
+  locator: "results table, UDOS 2: Experimental TID (Rad (Si))/Year"
+  status: CONFIRMED
+  note: >-
+    Verified against the PDF by the main agent (2026-10-06). Secondary comparison: the source's own AP8/AE8 + SOLPRO
+    model via NOVICE gives 22.13 rad(Si) for the front 2 pi only and 35.82 rad(Si) with a 6 g/cm2 back slab added
+    (2.05x below the measurement).
+tolerance:
+  kind: factor
+  value: 2.0
+  rationale: "Design choice: the per-year rate is extrapolated from an accumulation interval the source does not state, and both slabs are approximations of the real spacecraft. Do not widen if the case fails."
+notes: >-
+  Physics case against a real flight measurement. If it fails, the cause is not established. Candidates: the
+  rear-shielding approximation; AE8min accuracy in the outer-belt horns at 85 deg; AP8min accuracy at 500 km near
+  solar minimum; the dosimeter's calibration and temperature response; and GCR (excluded here; its share is not yet
+  quantified, but physics-reviewer's order-of-magnitude estimate from ISS data suggests it is small and unlikely to
+  close the gap alone). Halving the front slab changes the measured dose by only 5% (70.0 vs 73.6) but the
+  model by 1.6x, which points to a penetrating or rear component. Rerun with include_gcr once a GCR dose model
+  exists, and report which component closes the gap (physics-reviewer, PR #9).

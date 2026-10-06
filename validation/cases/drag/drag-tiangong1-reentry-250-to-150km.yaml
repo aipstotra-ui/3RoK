@@ -23,7 +23,7 @@ reference:
 tolerance:
   kind: rel
   value: 0.20
-  rationale: "Roadmap target for reentry-timing cases (±20%). Error budget: start time ±0.5 d (~2%), start altitude read from a figure (~±1 d at ~1 km/day, ~3%), B uncertainty 6.7%, plus integrator and geodetic-height treatment. Density-model error is largely absorbed by the fitted B. Design choice, to be revisited with the Phase 2 residuals."
+  rationale: "Design choice (the roadmap sets no numeric target; an earlier draft cited one by mistake, corrected in PR #9). Error budget: start time ±0.5 d (~2%), start altitude read from a figure (~±1 d at ~1 km/day, ~3%), B uncertainty 6.7%, plus integrator and geodetic-height treatment. Density-model error is largely absorbed by the fitted B. To be revisited with the Phase 2 residuals."
 notes: >-
   Labelled implementation, not physics (physics-reviewer, PR #7): B was fitted with NRLMSISE-00 over this
   window, so a pass shows our propagator reproduces the source's fit, not independent physics skill.

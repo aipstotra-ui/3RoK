@@ -36,7 +36,7 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
   - GMAT eclipse configuration
   - Starlink v1.5 mass and area
 - **Not yet researched (stopped 2026-10-05 to save tokens; to be redone just in time on Sonnet):**
-  - radiation references (published dose-depth, ISS dosimetry, CREME96 examples, GCR/cutoff and SEP models, AP9 terms)
+  - radiation: GCR/cutoff and SEP model specifications, AP9/AE9 licence terms (dose-depth, ISS dosimetry and CREME96 searches done 2026-10-06; docs/research/phase1-radiation.md)
   - forecasts (NOAA 3-day archive, OMNI timing, on-orbit upset counts, thermal constants, checkpoint formulas)
   - workloads (ResNet-50, ~1B LLM, fault-injection and SDC studies)
 
@@ -44,6 +44,17 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **Tiangong-1 Feb 2018 decay-rate case removed.** Its start altitude (280 km) was a January value with no source; back-integrating Pardini's rates gives ≈268.5 km on 1 Feb. Restore it when `researcher` reads the 1 Feb mean altitude from pardini2019tiangong1 Fig. 4.
 - **Starlink Group 4-7 orientation:** RAAN / local time must come from Space-Track TLEs (Phase 2). The 'previous launches' baseline in the SpaceX statement is undefined; our quiet-Ap baseline is a stated design choice.
 - **An independent (non-fitted) drag physics case is still needed,** for example ISS decay between reboosts from TLEs. The Tiangong-1 reentry case is an implementation check because B was fitted with NRLMSISE-00.
+
+## Radiation cases deferred (Phase 1.4b)
+- **ISS DOSTEL dose rate (berger2017dosis):** measured rates are saved, but the Columbus/DOSTEL shielding thickness is not given ("heavier shielded"). The case needs a sourced shielding distribution for that location, and a GCR dose model (GCR dominates inside the ISS).
+- **ISS TMS44400 DRAM in-flight SEU rate (koontz2020issee):** in-flight 8.5e-8 and 7.0e-8 SEU/bit/day are saved, but the device cross-section slide is unreadable (σsat exponent, W). Restore once the TI-44100 heavy-ion data are sourced.
+- **No fully specified LEO CREME96 SEU worked example** found. Not yet tried: Tylka et al. 1997.
+
+## Radiation model gaps (physics-reviewer, PR #9)
+- **ESP-PSYCHIC** (Xapsos et al. 2000, 2007) must be sourced and given an ADR before Phase 2 builds it. The SPENVIS dose-depth cases need it.
+- **Geomagnetic field model and epoch for AP8/AE8 B,L** (this moves the SAA): pin it in an ADR.
+- **GCR dose model:** needed to rerun the Shields-1 cases with `include_gcr` and to restore the ISS DOSTEL case.
+- **Dose by species:** the validation report must show residuals broken down by species (trapped p, trapped e plus bremsstrahlung, SEP, GCR).
 
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
