@@ -16,6 +16,7 @@ inputs:
   baseline_ap_mode: all_ap_history_elements # NRLMSISE-00 daily Ap and all 3-hourly ap history elements held at 4
   raan_source: tle                         # RAAN/local time from Space-Track TLEs (Phase 2; docs/open-issues.md)
   space_weather: historical
+  storm_ap_mode: all_ap_history_elements  # storm run uses the full historical 3-hourly ap history, like the baseline
 quantity: max over the storm window of the per-revolution mean drag(storm) / per-revolution mean drag(quiet baseline)
 unit: "1"
 reference:
