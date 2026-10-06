@@ -7,6 +7,12 @@ workloads:
   - id: resnet50-inference
     name: ResNet-50 image classification, inference
     phase: inference
+    role:
+      value: calibration
+      reason: >-
+        Standard subject of published bit-flip studies (mahmoud2020pytorchfi; hong2019tbd, the latter UNVERIFIED) and
+        small enough for millions of injections, so Phase 4 can check its fault-injection tools against the literature.
+        Not a stand-in for orbital AI: a 2015 CNN with ~100 MB of weights (Aiden, 2026-10-06).
     model_name: torchvision ResNet50_Weights.IMAGENET1K_V1
     parameters: {value: 25557032, source: torchvision_resnet50_weights, locator: "weights table: num_params", status: CONFIRMED}
     precision: {value: 32, design_choice: "fp32 as distributed (97.8 MB file / 25.56M params = ~4 bytes per weight); reduced-precision variants are separate workloads"}
@@ -22,6 +28,9 @@ workloads:
   - id: nemotron3-nano-4b-inference
     name: NVIDIA Nemotron-3-Nano-4B, inference
     phase: inference
+    role:
+      value: representative
+      reason: "Stands in for modern LLM inference planned for orbital AI compute (Aiden's choice of an NVIDIA-built model)."
     model_name: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
     parameters: {value: 3973556832, source: hf_nemotron3_nano_4b, locator: "HF API safetensors total", status: CONFIRMED}
     precision: {value: 16, source: hf_nemotron3_nano_4b, locator: "config.json torch_dtype: bfloat16", status: CONFIRMED}
@@ -38,6 +47,9 @@ workloads:
   - id: nemotron3-nano-4b-training-step
     name: NVIDIA Nemotron-3-Nano-4B, one training step
     phase: training
+    role:
+      value: representative
+      reason: "Stands in for model training or fine-tuning in orbit."
     model_name: nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16
     parameters: {value: 3973556832, source: hf_nemotron3_nano_4b, locator: "HF API safetensors total", status: CONFIRMED}
     precision: {value: 16, design_choice: "bf16 mixed-precision training; fp32 master weights and optimizer state are modelled separately in Phase 4"}

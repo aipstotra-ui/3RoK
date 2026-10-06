@@ -163,6 +163,7 @@ def _workload(**overrides: object) -> dict[str, object]:
         "id": "test-model-inference",
         "name": "Test model inference",
         "phase": "inference",
+        "role": {"value": "calibration", "reason": "matches published studies"},
         "model_name": "TestNet",
         "parameters": _sv(25.6e6),
         "precision": {"value": 16, "design_choice": "bf16 inference"},
@@ -208,3 +209,26 @@ def test_optional_workload_values_must_be_positive() -> None:
         WorkloadSet.model_validate(
             {"schemaVersion": 1, "workloads": [_workload(flops_per_item=_sv(-1.0))]}
         )
+
+
+def test_workload_role_and_reason_are_required() -> None:
+    from orbitlife_build.reference import WorkloadSet
+
+    no_role = _workload()
+    del no_role["role"]
+    for bad in (
+        no_role,
+        _workload(role={"value": "calibration", "reason": ""}),
+        _workload(role={"value": "demo", "reason": "x"}),
+    ):
+        with pytest.raises(ValidationError):
+            WorkloadSet.model_validate({"schemaVersion": 1, "workloads": [bad]})
+
+
+def test_repository_has_one_calibration_and_one_representative_workload_kind() -> None:
+    sets = load_reference_sets(
+        REPO / "validation" / "reference", (REPO / "docs/refs.bib").read_text()
+    )
+    assert sets.workloads is not None
+    roles = {w.role.value for w in sets.workloads.workloads}
+    assert roles == {"calibration", "representative"}
