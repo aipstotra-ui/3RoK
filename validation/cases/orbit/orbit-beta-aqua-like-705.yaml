@@ -14,8 +14,8 @@ reference:
   source: orekit_13_1_9
   locator: "orekit_refs.out.json, orbits.aqua-like-705.beta_deg"
   status: CONFIRMED
-  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json"
+  computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json Constants: Earth mu = 3.9860044180e+14 m3/s2 (WGS84), eclipse Earth sphere R = 6378.137 km, Sun radius = 695700.0 km, AU = 149597870700 m."
 tolerance:
   kind: abs
   value: 0.02
-  rationale: "Independent Sun ephemerides (Orekit uses JPL DE data from orekit-data) can differ by up to ~0.01 deg; 0.02 deg leaves margin without hiding frame or sign errors (a wrong RAAN frame or sign shifts beta by degrees)."
+  rationale: "Independent Sun ephemerides differ by ~0.01 deg or less (astropy/erfa reproduced Orekit to 1e-6 deg); 0.02 deg leaves margin. A RAAN sign flip shifts beta by ~0.66 deg and a 0.35 deg RAAN/Sun-RA frame offset by ~0.23 deg here (physics-reviewer, E3), so both are caught."

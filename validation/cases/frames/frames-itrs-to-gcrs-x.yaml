@@ -19,6 +19,6 @@ reference:
   computed_with: "Orekit 13.1.9 via orekit-jpype 13.1.9.0; orekit-data commit 2422a7d (zip sha256 3f1cdf30d802f5e3...); generator validation/generators/orekit_refs.py; output validation/generators/orekit_refs.out.json. IERS 2010, EOP from orekit-data (simpleEOP=False)."
 tolerance:
   kind: abs
-  value: 0.001
-  rationale: "1 m: differences in EOP data versions and interpolation between implementations are at the cm-dm level; any convention error (missing polar motion, wrong precession-nutation, UT1 vs UTC) is metres to kilometres."
-notes: "Input point is the textbook ITRF example position; the reference is Orekit's output, not the textbook's."
+  value: 0.00025
+  rationale: "0.25 m. Independent implementations agree to 3.5 cm (astropy/erfa vs Orekit; physics-reviewer, E3). The GCRS vs EME2000 (FK5 J2000) frame bias moves this point by (+0.08, +0.57, -0.61) m, so the y and z cases catch that mix-up; missing polar motion, a wrong precession-nutation model or UT1 vs UTC are larger still."
+notes: "The input is an arbitrary LEO-like ITRS position; the reference is Orekit's output. It is not taken from any textbook."

@@ -41,7 +41,7 @@ def beta_angle_deg(epoch_utc: str, inclination_deg: float, raan_gcrf_deg: float)
 def sgp4_position_teme_km(
     tle_line1: str, tle_line2: str, minutes_since_epoch: float, component: Literal["x", "y", "z"]
 ) -> float:
-    """SGP4 (Vallado 2006 revision) TEME position component."""
+    """SGP4/SDP4 (Vallado 2006 revision, WGS-72 gravity constants as TLEs require) TEME position component."""
 
 
 # orbitlife.frames

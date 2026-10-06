@@ -1,9 +1,15 @@
 {
   "versions": {
     "orekit-jpype": "13.1.9.0",
-    "orekit": "see orekit-jpype",
+    "orekit": "Orekit Java library bundled with orekit-jpype (same major.minor.patch)",
     "orekit_data_zip": "orekit-data.zip",
     "orekit_data_sha256": "3f1cdf30d802f5e3cbeaaf22cadf02e6f30c8ba6c0d9ef865c57c83e2532761e"
+  },
+  "constants": {
+    "earth_mu_m3_s2": 398600441800000.0,
+    "earth_radius_eclipse_m": 6378137.0,
+    "sun_radius_m": 695700000.0,
+    "astronomical_unit_m": 149597870700.0
   },
   "eclipse_epoch_utc": "2025-06-21T00:00:00Z",
   "sun_distance_au": 1.016195963072938,
@@ -19,10 +25,10 @@
     "iss-415": {
       "altitude_km": 415.0,
       "inclination_deg": 51.6,
-      "raan_deg": 0.0,
-      "beta_deg": -28.163050371305534,
-      "umbra_min": 34.4301721790501,
-      "penumbra_min": 34.74321235565159
+      "raan_deg": 90.0,
+      "beta_deg": 14.673232319925797,
+      "umbra_min": 35.5475130577064,
+      "penumbra_min": 35.82848141112825
     }
   },
   "frames": {
