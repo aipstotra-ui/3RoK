@@ -2,7 +2,7 @@
 
 **How long will an AI chip last in orbit, and what will shorten its life?**
 
-> **Status: pre-alpha (Phase 0, foundations).** No models have shipped yet. The plan is in [docs/roadmap.md](docs/roadmap.md).
+> **Status: pre-alpha.** Phase 1 (validation-first specification) is under review. No models have shipped yet. The reference cases each model must later meet are in [`validation/`](validation/); the plan is in [docs/roadmap.md](docs/roadmap.md).
 
 `orbitlife` will be an open-source toolkit for engineers planning AI compute in low Earth orbit. For a satellite and the chips it carries, it will estimate both the satellite's **orbital lifetime** and the chip's **radiation and reliability budget**:
 
