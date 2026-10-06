@@ -69,7 +69,7 @@ orbitlife/                          GitHub aipstotra-ui/3RoK (rename later; GitH
       quantity, constants, schema      typed values with provenance, constants registry, pydantic models
       time, frames, orbit              astropy/skyfield-backed frames & time scales; J2 propagation, SSO, beta, eclipse
       env/                             trapped belts (AP8/AE8 grid; AP9/AE9 optional), GCR, SEP, geomagnetic cutoff, aurora
-      effects/                         TID, SEE (proton Bendel/Weibull, heavy-ion LET-Weibull), displacement-damage hook
+      effects/                         TID, SEE (proton Bendel/Weibull, heavy-ion LET-Weibull), SEL (destructive latchup), displacement-damage hook
       drag, thermal                    NRLMSIS orbit-averaged density + lifetime; radiative heat balance
       workload/                        SDC & goodput: ECC/scrub, Young–Daly checkpointing, model-level fault impact
       fleet/                           whole-constellation Monte Carlo (NumPy; optional JAX/CuPy GPU backend)
@@ -182,7 +182,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - dawn-dusk SSO at 600 and 800 km
   - ISS 420 km / 51.6°
   - 1200 km / 87.9° (OneWeb-like)
-- **Reference devices,** each with cited test data or flagged `heuristic`:
+- **Reference devices,** each with cited test data (TID, SEU, and **SEL**: LET threshold and saturated cross-section, or "no SEL up to LET X") or flagged `heuristic`:
   - DDR4/DDR5
   - HBM3 stack
   - GPU on-die SRAM
@@ -192,6 +192,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
 - **`validation/` cases:** written now, with source, quantity and tolerance (the tolerance being a labeled design choice):
   - SPENVIS dose-depth curves
   - CREME96 SEE rates
+  - CREME96 SEL rates for a device with a published SEL Weibull fit
   - Orekit/GMAT eclipse and beta angle
   - Vallado SSO inclination
   - ISS decay between reboosts
@@ -217,6 +218,13 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - SEE: proton Bendel/Weibull fits, heavy-ion LET-Weibull with RPP and integral-LET
   - storms act on SEP and outer-belt electrons only
   - multi-bit upsets get their own parameter
+- **Single-event latchup (SEL), added 2026-10-05 at Aiden's request:**
+  - heavy-ion SEL rate from the device's LET-Weibull fit (same RPP and integral-LET machinery as SEE), plus proton-induced SEL where test data show it
+  - temperature dependence (SEL sensitivity rises with temperature), driven by the thermal model's operating temperature; sourced per device or flagged `heuristic`
+  - storms raise SEL risk through SEP heavy ions; trapped protons only matter for proton-sensitive parts
+  - mitigation: a latchup protection circuit (current sense and power cycle) turns a destructive event into a recoverable one with a stated probability and downtime; probability sourced or flagged `heuristic`
+  - outputs: destructive SEL probability per chip per year (with uncertainty) and recoverable SEL events and downtime per year
+  - devices with no SEL test data say so in the result; they never get a silent zero
 - **Drag and lifetime:**
   - NRLMSIS 2.0 averaged over latitude and local time
   - F10.7/Ap percentile schedules
@@ -229,6 +237,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
   - the binding limit explained per mechanism
 - **Exit:**
   - Every Phase 1 science case is green, or documented as a model limitation by `validation-analyst`.
+  - SEL rates match CREME96 within a factor of 2 for the same Weibull parameters.
   - `physics-reviewer` is clean.
   - `docs/science/validation.md` is generated automatically.
   - `data-v1` is released.
@@ -258,7 +267,7 @@ Order: 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7. Every work item follows the 
 - **Fault-injection harness** (in `-build`, PyTorch, CUDA if available):
   - Flip bits in weights and activations for the reference workloads.
   - Publish accuracy-vs-upset-rate curves as a data product so `workload.impact()` can use them.
-- **`fleet/`:** whole-shell Monte Carlo giving expected chip failures per year, compute availability, storm-driven decay and replacement rate. NumPy by default, optional JAX/CuPy GPU backend with a benchmark.
+- **`fleet/`:** whole-shell Monte Carlo giving expected chip failures per year (TID wear-out plus destructive SEL), compute availability, storm-driven decay and replacement rate. NumPy by default, optional JAX/CuPy GPU backend with a benchmark.
 - **Exit:**
   - The analytic SDC model matches injection results within the stated tolerance.
   - A fleet run of 10,000 satellites × 1,000 scenarios has a published benchmark.
