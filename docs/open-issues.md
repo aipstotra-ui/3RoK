@@ -74,6 +74,41 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **Tiangong-1 covers only the last ~29.7 days** of the "final year" in the roadmap.
 - **No machine-readable "expected FAIL" marker.** Once Phase 2 implements drag and radiation, the documented-miss cases (Starlink G4-7, Shields-1) will make `just validate` exit 1. This needs a decision from Aiden (or an ADR) before Phase 2.
 
+## Phase 1 exit: expert-skeptic gaps awaiting Aiden's decision (2026-10-06)
+Ranked by damage to expert trust. Each needs either a Phase 1 extension or a hard Phase 2 entry gate.
+1. **SEU chain has no validation:**
+   - self-run CREME96 and SPENVIS reference cases for the reference missions (both tools need a free account, which Aiden must create)
+   - a Kintex UltraScale Weibull case (lee2015kintexus) and a proton Bendel/σ(E) case
+   - the ISS TMS44400 flight case (needs the device σ)
+   - the flux-geometry ADR first
+2. **No Weibull SEL case** (the Phase 2 SEL exit criterion needs one).
+3. **No drag case a correct model should pass:** pre-register ISS TLE decay between reboosts and a May 2024 (Gannon) storm decay case. Optionally add a Swarm/GRACE-FO density comparison and a JB2008 comparison for Starlink G4-7.
+4. **Storm-time radiation** (SEP, cutoff suppression vs Kp/Dst): no case and no forecast target. Lead: Leske et al. 2001 (SAMPEX). The README now states that v1 storm scope is Kp/Dst and drag only.
+5. **GPU memory data:**
+   - no GPU on-die SRAM entry
+   - no MBU/MCU fraction or ECC scheme fields
+   - no sea-level (JESD89A) cross-check case
+6. **Orbit geometry:** beta-angle case (Boain Fig. 8), Orekit umbra/penumbra cases, Vallado 2006 SGP4 verification vectors, one GCRS↔ITRS example.
+7. **Shields-1 same-model cases:** reproduce the source's NOVICE values (35.82, 27.38 rad(Si)) so physics residuals can be attributed.
+8. **Dose coverage:** self-run SPENVIS for every reference mission, with all settings recorded.
+9. **Forecast protocol v2** (allowed now, since no test score exists):
+   - Feb 2022 replay (non-headline)
+   - threshold-weighted CRPS or forecast-conditioned storm diagnostics
+   - tail quantiles 0.01 and 0.99, or declare Kp ≥ 7 scores uninformative
+   - one physics baseline per target (Newell coupling for Kp; Burton or O'Brien-McPherron for Dst)
+   - check Kyoto provisional Dst coverage for 2024–25
+10. **Thermal:** one textbook radiative-balance case before Phase 2 thermal.
+11. **Schema and research hygiene:**
+    - a status CONFIRMED_ABSTRACT for abstract-only reads (coelho2025tx2, ryu2025ddr4temp, dang2022starlink, kataoka2022starlink)
+    - split `effect` (mechanism) from `outcome` (SDC, DUE, UE, crash)
+    - rename per-device SoC "SEU" cross-sections as observed errors, with the workload recorded
+    - an uncertainty on the TPU conversion
+    - a reference epoch and solar-activity scenario per mission
+12. **Workloads:**
+    - name a verified ResNet-50 calibration figure before Phase 4
+    - pre-register a Nemotron evaluation (dataset, metric, sample count)
+    - consider a Transformer LLM calibration workload (Llama 3.2 1B, chai2025llmgpu)
+
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
 - GOES-R SGPS licence

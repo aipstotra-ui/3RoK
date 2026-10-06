@@ -4,7 +4,7 @@ Each case compares one orbitlife output with a trusted reference. Cases are writ
 
 There are two kinds of check:
 - **`implementation`**: same model as a reference code (SPENVIS, CREME96, Orekit/GMAT, a textbook table). Agreement shows our code is right, not that the physics is.
-- **`physics`**: against measured flight or ground data (ISS decay, the Feb 2022 Starlink loss, on-orbit upset counts). Agreement shows the physics is right.
+- **`physics`**: against measured flight or ground data (e.g. Shields-1 measured dose, the Feb 2022 Starlink drag report). Agreement shows the physics is right.
 
 ## Case format
 

@@ -16,6 +16,7 @@ inputs:
   baseline_ap_mode: all_ap_history_elements # NRLMSISE-00 daily Ap and all 3-hourly ap history elements held at 4
   raan_source: tle                         # RAAN/local time from Space-Track TLEs (Phase 2; docs/open-issues.md)
   space_weather: historical
+  density_model: nrlmsis2                  # the Phase 2 default; a JB2008 comparison is reported alongside
   storm_ap_mode: all_ap_history_elements  # storm run uses the full historical 3-hourly ap history, like the baseline
 quantity: max over the storm window of the per-revolution mean drag(storm) / per-revolution mean drag(quiet baseline)
 unit: "1"
@@ -34,5 +35,6 @@ tolerance:
   rationale: "Design choice: accept 1.2-1.8. NRLMSIS-class models are expected to land at or below 1.2, so a FAIL here is the honest, published weakness of empirical density models in storms, not a reason to widen the tolerance."
 notes: >-
   Designed to expose the known under-prediction; report the residual in the validation report. The ratio
-  cancels B (density ratio along the orbit). Baseline mismatch with SpaceX's 'previous launches' is a
+  cancels B only if attitude is unchanged: SpaceX's figure may include drag-area changes from the edge-on safe
+  mode the satellites were commanded into (spacex2022geostorm), so part of the 1.5 may not be density. Baseline mismatch with SpaceX's 'previous launches' is a
   stated limitation (physics-reviewer, PR #7).
