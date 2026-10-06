@@ -109,6 +109,10 @@ Ranked by damage to expert trust. Each needs either a Phase 1 extension or a har
     - pre-register a Nemotron evaluation (dataset, metric, sample count)
     - consider a Transformer LLM calibration workload (Llama 3.2 1B, chai2025llmgpu)
 
+## Phase 2 cases to add once DoseResult has components (physics-reviewer, E2)
+- **Shields-1 proton-component cases:** 21.77 and 13.48 rad(Si)/yr, from the source's p/e split.
+- **A Shields-1 depth-ratio case,** front(3 g/cm²)/front(6 g/cm²) = 1.616. It cancels the SAA normalisation, the field epoch and most of the AP8 min/max scaling, so a tighter, justified tolerance is possible.
+
 ## Data licensing before going public (researcher, Phase 0)
 - CelesTrak GP/SATCAT and SupGP redistribution terms
 - GOES-R SGPS licence

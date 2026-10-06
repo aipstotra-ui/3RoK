@@ -20,18 +20,23 @@ reference:
   value: 13.69
   uncertainty: 0.07
   source: thomsen2022shields1
-  locator: "results table, UDOS 1: 'Modeled TID (Proton (p) & Electron (e)) (Rad (Si))' = 13.48 p + 0.21 e = 13.69"
+  locator: "slide text: '1 year mission, AP8 AE8 ... SOLPRO (King) Model'; results table, UDOS 1: 'Modeled TID (Proton (p) & Electron (e)) (Rad (Si))' = 13.48 p + 0.21 e = 13.69"
   status: CONFIRMED
   note: "Verified against the PDF by the main agent (2026-10-06). The source's model: AP8 AE8 trapped belts plus SOLPRO (King) solar protons, NOVICE shielding approximation, infinite slab."
 tolerance:
   kind: factor
   value: 1.5
   rationale: >-
-    Design choice. The AP8/AE8 epoch (min vs max) and the SOLPRO share are not stated in the source, and NOVICE's
-    slab treatment differs from SHIELDOSE-2. A factor of 1.5 still separates 'our code reproduces their model'
-    from the 2.05-2.56x gap between their model and the measurement (radiation-shields1-slab-al-*).
+    Design choice. Unknowns: the AP8/AE8 epoch (min vs max), the geomagnetic field model and epoch used for AP8/AE8
+    B,L (it moves the SAA, and the effect at 500 km can be as large as this tolerance), the SOLPRO share, and NOVICE's
+    slab treatment vs SHIELDOSE-2. A factor of 1.5 catches the classic bug classes (one- vs two-sided slab, 2 pi vs
+    4 pi, g/cm2 vs mm, rad vs Gy, per day vs per year) but not 20-40% transport differences. It does NOT by itself
+    separate code error from physics: a pass bounds our departure from NOVICE to <=1.5x, so at least 1.71x of the
+    gap to the measurement is attributed to the environment model or a missing population. Always report the actual ratio.
 notes: >-
   Same-model companion to radiation-shields1-slab-al-6gcm2 (Phase 1 extension E2, expert-skeptic gap 7). If this
   case passes and the physics case misses, the residual is attributable to the AP8/AE8 environment or a missing
   population, not to our transport code. The proton share is 13.48 of 13.69 rad(Si); SOLPRO solar protons may sit
-  inside it, so a low miss here could be the excluded SOLPRO term.
+  inside it, so a low miss here could be the excluded SOLPRO term. The test is asymmetric: a trapped-only result
+  more than 1.5x ABOVE the reference is unambiguously ours, while a low miss is ambiguous. Also log the AP8MAX result
+  as a diagnostic once code exists (physics-reviewer, E2).
