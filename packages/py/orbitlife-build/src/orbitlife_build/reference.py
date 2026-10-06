@@ -155,6 +155,17 @@ class Benchmark(_Strict):
     unit: _NON_EMPTY
 
 
+class WorkloadRole(_Strict):
+    """Why this workload is in the set.
+
+    calibration: checks our fault-injection tools against published studies; not a stand-in for
+    orbital AI. representative: stands in for the AI work actually planned for orbit.
+    """
+
+    value: Literal["calibration", "representative"]
+    reason: _NON_EMPTY
+
+
 class Workload(_Strict):
     """A reference AI workload.
 
@@ -165,6 +176,7 @@ class Workload(_Strict):
     id: _ID
     name: _NON_EMPTY
     phase: Literal["inference", "training"]
+    role: WorkloadRole
     model_name: _NON_EMPTY
     parameters: SourcedValue
     precision: SourcedValue | DesignChoice  # bits per weight
