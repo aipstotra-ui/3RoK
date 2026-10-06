@@ -1,0 +1,21 @@
+id: forecast-noaa-issue-selection-t1200
+title: NOAA baseline at issue time T = 2025-10-01T12:00:00Z selects the 12:30 issue (protocol §4.4)
+module: forecast
+check: implementation
+target: orbitlife.forecast.noaa_baseline_kp
+inputs:
+  issue_time_utc: "2025-10-01T12:00:00Z"                  # our forecast issue time T
+  block_start_utc: "2025-10-01T21:00:00Z"  # target block 21-00UT on Oct 01
+quantity: NOAA Kp used as the baseline for this T and block
+unit: "1"
+reference:
+  value: 5.666667
+  source: noaa_ngdc_3day_archive
+  locator: "2025/10/202510011230three_day_forecast.txt (':Issued: 2025 Oct 01 12:30 UTC'), row 21-00UT, column Oct 01"
+  status: CONFIRMED
+  computed_with: "Printed value 5.67 converted to exact thirds per protocol §4.4: round(3 x 5.67)/3 = 17/3 = 5.666667"
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: "Exact value from the selected file; picking the other issue gives 3.00 vs 5.67, so a selection bug fails loudly."
+notes: "Rule (validation/forecast-protocol.md §4.4): newest issue at or before T + 30 min, by header time; values converted to exact thirds."

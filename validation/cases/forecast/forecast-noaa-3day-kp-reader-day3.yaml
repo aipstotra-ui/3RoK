@@ -1,0 +1,19 @@
+id: forecast-noaa-3day-kp-reader-day3
+title: NOAA 3-day forecast reader extracts a day-3 block (2025-10-03 21-00UT)
+module: forecast
+check: implementation
+target: orbitlife.forecast.noaa_3day_kp
+inputs:
+  issue_utc: "2025-10-01T12:30:00Z"
+  block_start_utc: "2025-10-03T21:00:00Z"
+quantity: NOAA predicted Kp for the block
+unit: "1"
+reference:
+  value: 2.00
+  source: noaa_ngdc_3day_archive
+  locator: "2025/10/202510011230three_day_forecast.txt, row 21-00UT, column Oct 03"
+  status: CONFIRMED
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: "Exact parse of a published two-decimal value."
