@@ -65,19 +65,35 @@ def storm_drag_ratio(
 def tid_dose_rad_si(
     altitude_km: float,
     start_epoch_utc: str,
-    duration_yr: float,
-    shielding_mm_al: float,
-    geometry: Literal["solid_sphere_center", "slab_2pi_thick_backing"],
-    inclination_deg: float | None = None,
+    duration_yr: float,  # Julian years (365.25 d)
+    geometry: Literal["solid_sphere_center", "slab_two_sided", "slab_one_sided"],
+    shielding_mm_al: float | None = None,  # exactly one of mm Al or g/cm2 Al
+    shielding_g_cm2_al: float | None = None,
+    rear_shielding_g_cm2_al: float | None = None,  # slab_two_sided only
+    inclination_deg: float | None = None,  # exactly one of inclination_deg or sun_synchronous
     sun_synchronous: bool = False,
-    ltan_h: float | None = None,
+    ltan_h: float
+    | None = None,  # no effect on static AP8/AE8 or a Stormer cutoff; kept for later models
     target_material: Literal["si"] = "si",
     trapped_proton_model: str = "ap8min",
     trapped_electron_model: str = "ae8max",
-    solar_proton_model: str | None = "esp_psychic",
-    solar_proton_confidence: float = 0.80,
-) -> float:
-    """Total ionizing dose over the mission behind aluminium shielding (trapped + solar protons)."""
+    solar_proton_model: str | None = None,  # design mode is explicit, e.g. "esp_psychic"
+    solar_proton_confidence: float | None = None,
+    sep_magnetic_shielding: str = "stormer_quiet",
+    include_gcr: bool = False,
+) -> DoseResult:
+    """Total ionizing dose behind aluminium (circular orbits only).
+
+    Geometry (SHIELDOSE-2 conventions, Seltzer 1994):
+    - solid_sphere_center: 4 pi isotropic dose at the centre of a solid Al sphere.
+    - slab_one_sided: 2 pi isotropic incidence on a semi-infinite Al slab (no doubling).
+    - slab_two_sided: front slab (2 pi) plus rear slab (2 pi), summed.
+    Trapped-proton anisotropy is ignored (AP8 is omnidirectional).
+
+    DoseResult.value is the total in rad(Si). DoseResult.components splits it into trapped
+    protons, trapped electrons with bremsstrahlung, SEP and GCR. DoseResult.flags lists every
+    assumption or heuristic used (ground rule 2).
+    """
 ```
 
 ## Top-level API

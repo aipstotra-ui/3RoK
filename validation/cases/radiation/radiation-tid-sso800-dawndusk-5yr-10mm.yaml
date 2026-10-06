@@ -16,6 +16,7 @@ inputs:
   trapped_electron_model: ae8max
   solar_proton_model: esp_psychic
   solar_proton_confidence: 0.80
+  sep_magnetic_shielding: spenvis_default   # Table 1: 'default'; SPENVIS mode not recoverable
 quantity: total ionizing dose over the mission
 unit: rad(Si)
 reference:
@@ -27,7 +28,10 @@ reference:
 tolerance:
   kind: rel
   value: 0.10
-  rationale: "Roadmap target for same-model SPENVIS comparisons (±10% over 1-20 mm). Includes the published-table rounding (±2.8%) and differences in orbit sampling and SPENVIS version."
+  rationale: "Design choice of PR #9 (the roadmap sets no numeric target; an earlier draft cited one by mistake). Same models, so 10% is meant to catch implementation errors, not physics. Includes the published-table rounding (±2.8%) and differences in orbit sampling and SPENVIS version."
 notes: >-
-  Mixed epochs (AP-8 solar minimum with AE-8 solar maximum) as chosen in the source. The total includes trapped
+  Settings not recoverable from the source (record our choices as assumptions in Phase 2): geomagnetic field
+  model and epoch for AP8/AE8 B,L; SPENVIS SEP shielding mode; ESP solar-active-year counting for 2011-2016;
+  SHIELDOSE-2 vs -2Q; orbit sampling. GCR is not part of SHIELDOSE-2 TID. A single total can pass while species
+  errors cancel, so the validation report must break residuals down by species. Mixed epochs (AP-8 solar minimum with AE-8 solar maximum) as chosen in the source. The total includes trapped
   protons, trapped electrons (with bremsstrahlung) and ESP-PSYCHIC solar protons at 80% confidence.
