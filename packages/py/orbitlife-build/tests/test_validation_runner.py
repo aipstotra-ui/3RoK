@@ -171,3 +171,71 @@ def test_result_is_serializable(fake_module: types.ModuleType) -> None:
     result = run_case(ValidationCase.model_validate(_case()))
     assert isinstance(result, CaseResult)
     assert result.model_dump(mode="json")["outcome"] == "PASS"
+
+
+# ---- Fixes from code review (PR #3) ----
+
+
+def test_missing_dependency_inside_existing_module_is_an_error(tmp_path: Path) -> None:
+    pkg = tmp_path / "fake_needs_dep.py"
+    pkg.write_text("import a_dependency_that_is_not_installed\n\ndef fn():\n    return 1.0\n")
+    sys.path.insert(0, str(tmp_path))
+    try:
+        result = run_case(ValidationCase.model_validate(_case(target="fake_needs_dep.fn")))
+    finally:
+        sys.path.remove(str(tmp_path))
+        sys.modules.pop("fake_needs_dep", None)
+    assert result.outcome is Outcome.ERROR
+    assert "a_dependency_that_is_not_installed" in result.detail
+
+
+def test_import_time_crash_is_an_error_not_a_suite_crash(tmp_path: Path) -> None:
+    (tmp_path / "fake_broken.py").write_text("raise RuntimeError('import boom')\n")
+    sys.path.insert(0, str(tmp_path))
+    try:
+        result = run_case(ValidationCase.model_validate(_case(target="fake_broken.fn")))
+    finally:
+        sys.path.remove(str(tmp_path))
+        sys.modules.pop("fake_broken", None)
+    assert result.outcome is Outcome.ERROR
+    assert "import boom" in result.detail
+
+
+@pytest.mark.parametrize("bad", [float("inf"), float("nan")])
+def test_non_finite_tolerance_is_rejected(bad: float) -> None:
+    with pytest.raises(ValidationError):
+        ValidationCase.model_validate(
+            _case(tolerance={"kind": "abs", "value": bad, "rationale": "x"})
+        )
+
+
+@pytest.mark.parametrize("bad", [float("inf"), float("nan")])
+def test_non_finite_reference_is_rejected(bad: float) -> None:
+    with pytest.raises(ValidationError):
+        ValidationCase.model_validate(
+            _case(
+                reference={
+                    "value": bad,
+                    "source": "vallado2013",
+                    "locator": "p",
+                    "status": "CONFIRMED",
+                }
+            )
+        )
+
+
+def test_yml_extension_is_loaded(tmp_path: Path) -> None:
+    import yaml
+
+    (tmp_path / "c.yml").write_text(yaml.safe_dump(_case()))
+    assert [c.id for c in load_cases(tmp_path, BIB)] == ["orbit-sso-600"]
+
+
+def test_missing_cases_directory_is_an_error(tmp_path: Path) -> None:
+    from orbitlife_build.validation import main
+
+    bib = tmp_path / "refs.bib"
+    bib.write_text(BIB)
+    out = tmp_path / "out.json"
+    with pytest.raises(SystemExit, match="does not exist"):
+        main(["--cases", str(tmp_path / "nope"), "--bib", str(bib), "--out", str(out)])

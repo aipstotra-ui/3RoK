@@ -55,8 +55,8 @@ class RefStatus(StrEnum):
 class Reference(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    value: float
-    uncertainty: float | None = Field(default=None, ge=0)
+    value: Annotated[float, Field(allow_inf_nan=False)]
+    uncertainty: float | None = Field(default=None, ge=0, allow_inf_nan=False)
     source: _NON_EMPTY
     locator: _NON_EMPTY
     status: RefStatus
@@ -68,7 +68,7 @@ class Tolerance(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     kind: Literal["abs", "rel", "factor"]
-    value: float = Field(gt=0)
+    value: float = Field(gt=0, allow_inf_nan=False)
     rationale: _NON_EMPTY
 
     @model_validator(mode="after")
@@ -138,7 +138,8 @@ def load_cases(cases_dir: Path, bib_text: str) -> list[ValidationCase]:
     keys = bib_keys(bib_text)
     cases: list[ValidationCase] = []
     seen: dict[str, Path] = {}
-    for path in sorted(cases_dir.rglob("*.yaml")):
+    paths = [*cases_dir.rglob("*.yaml"), *cases_dir.rglob("*.yml")]
+    for path in sorted(paths):
         case = ValidationCase.model_validate(yaml.safe_load(path.read_text()))
         if case.reference.source not in keys:
             raise ValueError(f"{path}: source {case.reference.source!r} not in docs/refs.bib")
@@ -150,11 +151,19 @@ def load_cases(cases_dir: Path, bib_text: str) -> list[ValidationCase]:
 
 
 def _resolve(target: str) -> Any | None:
+    """Return the target callable, or None if the target module or attribute doesn't exist yet.
+
+    A ModuleNotFoundError for some *other* module (a missing dependency inside an existing
+    target module) is re-raised, so a broken module is never reported as NOT_IMPLEMENTED.
+    """
     module_name, _, attr = target.rpartition(".")
     try:
         module = importlib.import_module(module_name)
-    except ModuleNotFoundError:
-        return None
+    except ModuleNotFoundError as exc:
+        missing = exc.name or ""
+        if missing and (module_name == missing or module_name.startswith(missing + ".")):
+            return None
+        raise
     return getattr(module, attr, None)
 
 
@@ -183,7 +192,10 @@ def _result(
 
 
 def run_case(case: ValidationCase) -> CaseResult:
-    fn = _resolve(case.target)
+    try:
+        fn = _resolve(case.target)
+    except Exception as exc:  # broken target module: report it, never crash the suite
+        return _result(case, Outcome.ERROR, detail=f"import failed: {type(exc).__name__}: {exc}")
     if fn is None:
         return _result(case, Outcome.NOT_IMPLEMENTED, detail=f"{case.target} does not exist yet")
     try:
@@ -219,7 +231,9 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--strict", action="store_true")
     args = parser.parse_args(argv)
 
-    cases = load_cases(args.cases, args.bib.read_text()) if args.cases.is_dir() else []
+    if not args.cases.is_dir():
+        raise SystemExit(f"cases directory {args.cases} does not exist")
+    cases = load_cases(args.cases, args.bib.read_text())
     results = [run_case(c) for c in cases]
     _print_table(results)
     args.out.write_text(json.dumps([r.model_dump(mode="json") for r in results], indent=2) + "\n")
