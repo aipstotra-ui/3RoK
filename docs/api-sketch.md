@@ -106,6 +106,33 @@ def noaa_baseline_kp(issue_time_utc: str, block_start_utc: str) -> float:
     """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min, converted to exact thirds."""
 ```
 
+```python
+# orbitlife.effects
+def sel_rate_per_device_day(
+    method: Literal["square_approximation", "weibull"],
+    sigma_sat_cm2_per_device: float,
+    onset_let_eff_si_mev_cm2_mg: float | None = None,  # square_approximation
+    weibull: WeibullParams | None = None,  # weibull: let_th, w, s (LET_EFF in Si)
+    integral_flux_above_onset_per_cm2_day: float
+    | None = None,  # square_approximation with a given flux
+    environment: LetSpectrum | None = None,  # or computed from an integral LET spectrum (LET in Si)
+    test_temperature_c: float | None = None,
+    sigma_confidence_level: float
+    | None = None,  # e.g. 0.95 when sigma is an upper limit from zero events
+) -> RateResult:
+    """Single-event latchup rate per device per day.
+
+    LET is the effective LET in silicon (LET_EFF) throughout. No angle or cosine-law correction is
+    applied in the square method. The given flux follows the TI SLVK046 convention: CREME96 integral
+    LET flux per cm2 per day, with any geometry factor already folded in. The omnidirectional-vs-per-sr
+    and planar-target factor must be recorded before Phase 2 computes the flux from an environment.
+    Exactly one input path is allowed per method; other combinations are rejected.
+    RateResult.value is events/device/day. RateResult.flags carry the test temperature (SEL
+    sensitivity rises with temperature), the sigma confidence level, and the environment percentile
+    (e.g. worst week is not a mission average).
+    """
+```
+
 ## Top-level API
 
 ```python
