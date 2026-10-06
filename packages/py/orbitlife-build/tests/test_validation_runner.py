@@ -253,3 +253,47 @@ def test_yaml_syntax_error_names_the_file(tmp_path: Path) -> None:
     (tmp_path / "typo.yaml").write_text('id: "unclosed\ntitle: x\n')
     with pytest.raises(ValueError, match=r"typo\.yaml"):
         load_cases(tmp_path, BIB)
+
+
+# ---- E1: expected documented misses ----
+
+_MISS = {"kind": "documented_miss", "reason": "empirical density models under-predict storms"}
+
+
+def test_expected_miss_that_fails_is_known_miss(fake_module: types.ModuleType) -> None:
+    case = ValidationCase.model_validate(_case(inputs={"altitude_km": 700.0}, expected=_MISS))
+    result = run_case(case)
+    assert result.outcome is Outcome.KNOWN_MISS
+    assert result.residual is not None
+
+
+def test_expected_miss_that_passes_is_flagged(fake_module: types.ModuleType) -> None:
+    result = run_case(ValidationCase.model_validate(_case(expected=_MISS)))
+    assert result.outcome is Outcome.PASS
+    assert "expected a documented miss" in result.detail
+
+
+def test_expected_miss_needs_a_reason() -> None:
+    with pytest.raises(ValidationError):
+        ValidationCase.model_validate(_case(expected={"kind": "documented_miss", "reason": ""}))
+
+
+def test_known_miss_does_not_fail_ci_but_strict_still_fails_on_not_implemented(
+    tmp_path: Path, fake_module: types.ModuleType
+) -> None:
+    import yaml
+    from orbitlife_build.validation import main
+
+    (tmp_path / "miss.yaml").write_text(
+        yaml.safe_dump(_case(id="a-miss", inputs={"altitude_km": 700.0}, expected=_MISS))
+    )
+    bib = tmp_path / "refs.bib"
+    bib.write_text(BIB)
+    out = tmp_path / "out.json"
+    args = ["--cases", str(tmp_path), "--bib", str(bib), "--out", str(out)]
+    assert main(args) == 0
+    assert main([*args, "--strict"]) == 0
+    (tmp_path / "todo.yaml").write_text(
+        yaml.safe_dump(_case(id="a-todo", target="orbitlife.nope.fn"))
+    )
+    assert main([*args, "--strict"]) == 1

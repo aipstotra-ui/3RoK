@@ -7,8 +7,9 @@ so a missing function is reported as NOT_IMPLEMENTED rather than as an error.
 Usage:
     python -m orbitlife_build.validation [--cases DIR] [--bib FILE] [--out FILE] [--strict]
 
-Exit code: 1 if any case is FAIL or ERROR. With --strict, also 1 if any case is
-NOT_IMPLEMENTED or matched only an UNVERIFIED reference.
+Exit code: 1 if any case is FAIL or ERROR. KNOWN_MISS (a documented expected miss) does
+not fail. With --strict, also 1 if any case is NOT_IMPLEMENTED or matched only an
+UNVERIFIED reference.
 """
 
 from __future__ import annotations
@@ -78,6 +79,15 @@ class Tolerance(BaseModel):
         return self
 
 
+class Expectation(BaseModel):
+    """A miss we expect and have documented (e.g. a known weakness of empirical models)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    kind: Literal["documented_miss"]
+    reason: _NON_EMPTY
+
+
 class ValidationCase(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -91,6 +101,7 @@ class ValidationCase(BaseModel):
     unit: _NON_EMPTY
     reference: Reference
     tolerance: Tolerance
+    expected: Expectation | None = None
     notes: str | None = None
 
 
@@ -98,6 +109,7 @@ class Outcome(StrEnum):
     PASS = "PASS"
     PASS_UNVERIFIED_REF = "PASS_UNVERIFIED_REF"
     FAIL = "FAIL"
+    KNOWN_MISS = "KNOWN_MISS"  # outside tolerance, as documented in the case's `expected`
     NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
     ERROR = "ERROR"
 
@@ -205,8 +217,20 @@ def run_case(case: ValidationCase) -> CaseResult:
         ours = _as_float(fn(**case.inputs))
     except Exception as exc:  # report every failure mode of the target, never crash the suite
         return _result(case, Outcome.ERROR, detail=f"{type(exc).__name__}: {exc}")
+    expected_miss = case.expected is not None and case.expected.kind == "documented_miss"
     if not within_tolerance(ours, case.reference.value, case.tolerance):
+        if expected_miss:
+            assert case.expected is not None
+            return _result(case, Outcome.KNOWN_MISS, ours, detail=case.expected.reason)
         return _result(case, Outcome.FAIL, ours)
+    if expected_miss:
+        note = "expected a documented miss but passed; review the expectation"
+        outcome = (
+            Outcome.PASS_UNVERIFIED_REF
+            if case.reference.status is RefStatus.UNVERIFIED
+            else Outcome.PASS
+        )
+        return _result(case, outcome, ours, detail=note)
     if case.reference.status is RefStatus.UNVERIFIED:
         return _result(case, Outcome.PASS_UNVERIFIED_REF, ours)
     return _result(case, Outcome.PASS, ours)

@@ -31,6 +31,9 @@ tolerance:
   kind: abs                             # abs | rel | factor
   value: 0.01                           # factor tolerances must be > 1 (2 means within ×2 either way)
   rationale: "Table rounds to 0.01 deg"   # required: why this margin is fair (it is an assumption)
+expected:                               # optional: only for a documented, explained miss
+  kind: documented_miss
+  reason: "why the miss is expected, with sources"
 notes: optional free text
 ```
 
@@ -47,6 +50,7 @@ The loader rejects a case if any of these is true:
 | `PASS` | Within tolerance of a CONFIRMED reference |
 | `PASS_UNVERIFIED_REF` | Within tolerance, but the reference is UNVERIFIED, so it is not evidence |
 | `FAIL` | The target exists and is outside tolerance |
+| `KNOWN_MISS` | Outside tolerance, as documented in the case's `expected` block (never counted as a pass; CI stays green; the residual is still reported) |
 | `NOT_IMPLEMENTED` | The target function doesn't exist yet |
 | `ERROR` | The target raised an exception |
 

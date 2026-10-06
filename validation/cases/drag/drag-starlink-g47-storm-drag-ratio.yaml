@@ -29,6 +29,9 @@ reference:
     An upper value whose baseline ('previous launches') is not defined by the source; our baseline is a
     design choice that isolates the geomagnetic effect. Model studies: NRLMSISE-00 <=20-25%, WAM-IPE/GAIA
     50-125% (fang2022starlink, kataoka2022starlink).
+expected:
+  kind: documented_miss
+  reason: "NRLMSIS-class empirical density models under-predict this storm's density rise (<=20-25% vs 50-125% from WAM-IPE/GAIA; fang2022starlink, kataoka2022starlink)."
 tolerance:
   kind: rel
   value: 0.20
