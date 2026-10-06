@@ -10,7 +10,7 @@
   - total ionizing dose (TID) behind shielding
   - single-event effects (upsets and multi-bit upsets, which are soft errors) from trapped protons, galactic cosmic rays and solar energetic particles
 
-  Single-event latchup and displacement damage are not yet in scope (see the roadmap).
+  Destructive single-event latchup (SEL) is planned for Phase 2; displacement damage is not yet in scope (see the roadmap).
 - **orbital lifetime:** atmospheric drag, including the effect of geomagnetic storms
 - **thermal margin:** direct sunlight, Earth albedo and Earth infrared, through eclipse and beta-angle cycles
 - **workload impact:** silent data corruption and goodput for AI workloads, and fleet-level reliability for a whole constellation
