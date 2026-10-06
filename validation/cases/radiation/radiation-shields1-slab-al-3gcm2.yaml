@@ -28,6 +28,9 @@ reference:
     Verified against the PDF by the main agent (2026-10-06). Secondary comparison: the source's own AP8/AE8 + SOLPRO
     model via NOVICE gives 22.13 rad(Si) for the front 2 pi only and 35.82 rad(Si) with a 6 g/cm2 back slab added
     (2.05x below the measurement).
+expected:
+  kind: documented_miss
+  reason: "The source's own AP8/AE8 + SOLPRO model (NOVICE, with a 6 g/cm2 back slab) is 2.05x below this measurement (thomsen2022shields1); the cause is not established (see notes)."
 tolerance:
   kind: factor
   value: 2.0
