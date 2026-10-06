@@ -1,0 +1,21 @@
+id: orbit-sso-inclination-800km
+title: Sun-synchronous inclination at 800 km (reference mission sso-dawn-dusk-800)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sso_inclination_deg
+inputs:
+  altitude_km: 800     # mean a - 6378.137 km, circular, mean elements (see validation/reference/missions.yaml)
+  eccentricity: 0.0
+quantity: mean inclination
+unit: deg
+reference:
+  value: 98.603
+  source: boain2004sso
+  locator: "Eq. 1"
+  status: UNVERIFIED
+  computed_with: "Boain Eq. 1 with Boain constants (J2 = 0.00108263, a_e = 6378.14 km, node rate 0.9856 deg/day) and mu = 398600.4418 km3/s2 (researcher). physics-reviewer reproduced it within 0.0007 deg with these constants and within 0.0003 deg with WGS84 J2, 6378.137 km and 360 deg/365.2422 d."
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: "Same first-order J2 formula; the reference is quoted to 0.001 deg. Constant choices (Boain vs WGS84) move it by <0.0007 deg. A regression check only (UNVERIFIED: no published table)."
+notes: "Not evidence on its own: it checks our formula against an independent evaluation of the same formula."

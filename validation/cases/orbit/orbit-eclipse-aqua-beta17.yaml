@@ -1,0 +1,23 @@
+id: orbit-eclipse-aqua-beta17
+title: Eclipse duration for Aqua at beta = 17 deg (its minimum beta)
+module: orbit
+check: implementation
+target: orbitlife.orbit.eclipse_duration_min
+inputs:
+  altitude_km: 705.3     # mean a - 6378.137 km, circular, mean elements (see validation/reference/missions.yaml)
+  beta_deg: 17.0
+  shadow_model: cylindrical
+quantity: eclipse duration per orbit
+unit: min
+reference:
+  value: 34.6
+  source: boain2004sso
+  locator: "§IX-X (rho = 64.2 deg, half-angle 62.9 deg, P = 86400*16/233 s)"
+  status: CORRECTED
+  computed_with: "Spherical Earth R_eq = 6378.137 km, cylindrical shadow, cos(half-angle) = cos(rho)/cos(beta), P = 86400*16/233 s; physics-reviewer recomputed 34.578 min"
+  note: "The paper prints 38.9 min, which contradicts its own inputs: (2*62.94/360)*98.88 min = 34.6 min (researcher, 2026-10-05). 38.9 min is also physically impossible: at beta = 0 the longest cylindrical eclipse at 705.3 km is 35.28 min (physics-reviewer, PR #7)."
+tolerance:
+  kind: abs
+  value: 0.3
+  rationale: "Reference recomputed from rounded inputs (beta ~17 deg, half-angle 62.9 deg) and the repeat-orbit period; the Keplerian period at 705.3 km differs by <0.1 min."
+notes: "Cylindrical shadow (no penumbra) on both sides. A conical umbra/penumbra comparison against Orekit is a separate case once Orekit outputs are generated."

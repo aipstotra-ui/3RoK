@@ -1,0 +1,19 @@
+id: orbit-sso-inclination-aqua
+title: Sun-synchronous inclination for Aqua (705.3 km)
+module: orbit
+check: implementation
+target: orbitlife.orbit.sso_inclination_deg
+inputs:
+  altitude_km: 705.3     # mean a - 6378.137 km, circular, mean elements (see validation/reference/missions.yaml)
+  eccentricity: 0.0
+quantity: mean inclination
+unit: deg
+reference:
+  value: 98.2
+  source: boain2004sso
+  locator: "§IX, p. 16 (Aqua worked example)"
+  status: CONFIRMED
+tolerance:
+  kind: abs
+  value: 0.05
+  rationale: "The source publishes 98.2 to one decimal, so the exact value lies within ±0.05 deg."

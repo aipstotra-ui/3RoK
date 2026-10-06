@@ -1,0 +1,30 @@
+id: drag-tiangong1-reentry-250-to-150km
+title: Tiangong-1 time to fall from ~250 km to 150 km (Mar 2018), with the source's fitted B
+module: drag
+check: implementation
+target: orbitlife.drag.days_to_altitude
+inputs:
+  start_epoch_utc: "2018-03-03T00:00:00Z"   # source gives the date only
+  start_altitude_km: 250.0                  # "~250 km", read from a figure; mean a - 6378.137 km (TLE-derived)
+  end_altitude_km: 150.0                    # same convention
+  eccentricity: 0.0                         # near-circular assumed
+  inclination_deg: 42.8
+  ballistic_coefficient_m2_per_kg: 0.007388 # B = Cd*A/M, NRLMSISE-00 fit 8 Jan - 1 Apr 2018 (sigma 6.7%)
+  density_model: nrlmsise00                 # the model B was fitted with
+  space_weather: historical
+quantity: elapsed time
+unit: day
+reference:
+  value: 29.67
+  source: pardini2019tiangong1
+  locator: "§4.1, Fig. 4 (250 km on 2018-03-03; 150 km on 2018-04-01 16:07 UTC); B from §5.3"
+  status: CONFIRMED
+  note: "29.67 d assumes 00:00 UTC on 2018-03-03 (date-only start, ±0.5 d)."
+tolerance:
+  kind: rel
+  value: 0.20
+  rationale: "Roadmap target for reentry-timing cases (±20%). Error budget: start time ±0.5 d (~2%), start altitude read from a figure (~±1 d at ~1 km/day, ~3%), B uncertainty 6.7%, plus integrator and geodetic-height treatment. Density-model error is largely absorbed by the fitted B. Design choice, to be revisited with the Phase 2 residuals."
+notes: >-
+  Labelled implementation, not physics (physics-reviewer, PR #7): B was fitted with NRLMSISE-00 over this
+  window, so a pass shows our propagator reproduces the source's fit, not independent physics skill.
+  Density must be evaluated at geodetic height along the orbit (up to ~10 km above a - R_eq at 42.8 deg).
