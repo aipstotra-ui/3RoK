@@ -108,6 +108,8 @@ def test_repository_reference_sets_load_and_cite_known_sources() -> None:
     )
     assert len(sets.missions.missions) >= 6
     assert len(sets.devices.devices) >= 6
+    assert sets.workloads is not None
+    assert len(sets.workloads.workloads) >= 3
     no_sel = [
         m
         for d in sets.devices.devices
@@ -151,3 +153,58 @@ def test_rating_kind_is_accepted_and_defaults_to_measurement() -> None:
     assert d.sel[0].kind == "rating"
     assert isinstance(d.see, list)
     assert d.see[0].kind == "measurement"
+
+
+# ---- Workloads (Phase 1.3) ----
+
+
+def _workload(**overrides: object) -> dict[str, object]:
+    w: dict[str, object] = {
+        "id": "test-model-inference",
+        "name": "Test model inference",
+        "phase": "inference",
+        "model_name": "TestNet",
+        "parameters": _sv(25.6e6),
+        "precision": {"value": 16, "design_choice": "bf16 inference"},
+        "license": {"name": "MIT", "source": "src_a", "locator": "LICENSE", "status": "CONFIRMED"},
+    }
+    w.update(overrides)
+    return w
+
+
+def test_workload_requires_a_sourced_license() -> None:
+    from orbitlife_build.reference import WorkloadSet
+
+    bad = _workload()
+    del bad["license"]
+    with pytest.raises(ValidationError):
+        WorkloadSet.model_validate({"schemaVersion": 1, "workloads": [bad]})
+
+
+def test_workload_parameters_must_be_positive() -> None:
+    from orbitlife_build.reference import WorkloadSet
+
+    with pytest.raises(ValidationError):
+        WorkloadSet.model_validate(
+            {"schemaVersion": 1, "workloads": [_workload(parameters=_sv(0.0))]}
+        )
+
+
+def test_workload_sources_are_checked(tmp_path: Path) -> None:
+    _write_sets(tmp_path, [_mission()], [_device()])
+    (tmp_path / "workloads.yaml").write_text(
+        yaml.safe_dump(
+            {"schemaVersion": 1, "workloads": [_workload(parameters=_sv(1e6, source="nope"))]}
+        )
+    )
+    with pytest.raises(ValueError, match="nope"):
+        load_reference_sets(tmp_path, BIB)
+
+
+def test_optional_workload_values_must_be_positive() -> None:
+    from orbitlife_build.reference import WorkloadSet
+
+    with pytest.raises(ValidationError):
+        WorkloadSet.model_validate(
+            {"schemaVersion": 1, "workloads": [_workload(flops_per_item=_sv(-1.0))]}
+        )

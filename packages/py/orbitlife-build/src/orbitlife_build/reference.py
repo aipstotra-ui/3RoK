@@ -141,10 +141,63 @@ class DeviceSet(_Strict):
     devices: list[Device]
 
 
+class License(_Strict):
+    name: _NON_EMPTY
+    source: _NON_EMPTY
+    locator: _NON_EMPTY
+    status: RefStatus
+    note: str | None = None  # e.g. what research use and redistribution allow
+
+
+class Benchmark(_Strict):
+    name: _NON_EMPTY  # e.g. "ImageNet top-1", "MMLU 5-shot"
+    result: SourcedValue
+    unit: _NON_EMPTY
+
+
+class Workload(_Strict):
+    """A reference AI workload.
+
+    Weight memory (parameters x precision) is one input to upset exposure; Phase 4 adds activations,
+    caches, optimizer state and registers.
+    """
+
+    id: _ID
+    name: _NON_EMPTY
+    phase: Literal["inference", "training"]
+    model_name: _NON_EMPTY
+    parameters: SourcedValue
+    precision: SourcedValue | DesignChoice  # bits per weight
+    flops_per_item: SourcedValue | None = (
+        None  # multiply-adds per inference item, as the source defines
+    )
+    context_length: SourcedValue | None = None
+    benchmark: Benchmark | None = None
+    license: License
+    note: str | None = None
+
+    @model_validator(mode="after")
+    def _positive(self) -> Workload:
+        optional = [self.flops_per_item, self.context_length]
+        if self.benchmark is not None:
+            optional.append(self.benchmark.result)
+        values = [self.parameters.value, self.precision.value]
+        values += [v.value for v in optional if v is not None]
+        if any(v <= 0 for v in values):
+            raise ValueError(f"{self.id}: sizes, precision and benchmark values must be positive")
+        return self
+
+
+class WorkloadSet(_Strict):
+    schemaVersion: Literal[1]  # noqa: N815
+    workloads: list[Workload]
+
+
 @dataclass(frozen=True)
 class ReferenceSets:
     missions: MissionSet
     devices: DeviceSet
+    workloads: WorkloadSet | None = None
 
 
 def _sources(sets: ReferenceSets) -> Iterable[tuple[str, str]]:
@@ -157,6 +210,20 @@ def _sources(sets: ReferenceSets) -> Iterable[tuple[str, str]]:
             if isinstance(evidence, list):
                 for meas in evidence:
                     yield d.id, meas.source
+    if sets.workloads is not None:
+        for w in sets.workloads.workloads:
+            sourced: list[SourcedValue | DesignChoice | None] = [
+                w.parameters,
+                w.precision,
+                w.flops_per_item,
+                w.context_length,
+            ]
+            if w.benchmark is not None:
+                sourced.append(w.benchmark.result)
+            for item in sourced:
+                if isinstance(item, SourcedValue):
+                    yield w.id, item.source
+            yield w.id, w.license.source
 
 
 def _check_unique(ids: list[str], kind: str) -> None:
@@ -170,9 +237,17 @@ def _check_unique(ids: list[str], kind: str) -> None:
 def load_reference_sets(directory: Path, bib_text: str) -> ReferenceSets:
     missions = MissionSet.model_validate(yaml.safe_load((directory / "missions.yaml").read_text()))
     devices = DeviceSet.model_validate(yaml.safe_load((directory / "devices.yaml").read_text()))
-    sets = ReferenceSets(missions=missions, devices=devices)
+    workloads_path = directory / "workloads.yaml"
+    workloads = (
+        WorkloadSet.model_validate(yaml.safe_load(workloads_path.read_text()))
+        if workloads_path.exists()
+        else None
+    )
+    sets = ReferenceSets(missions=missions, devices=devices, workloads=workloads)
     _check_unique([m.id for m in missions.missions], "mission")
     _check_unique([d.id for d in devices.devices], "device")
+    if workloads is not None:
+        _check_unique([w.id for w in workloads.workloads], "workload")
     keys = bib_keys(bib_text)
     for owner, source in _sources(sets):
         if source not in keys:

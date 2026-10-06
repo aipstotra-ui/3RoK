@@ -540,3 +540,176 @@
   pages   = {4058},
   doi     = {10.3390/electronics12194058}
 }
+
+% ---- Phase 1: reference workloads, fault injection, fleet SDC (researcher on Sonnet, 2026-10-06; docs/research/phase1-workloads.md) ----
+
+@inproceedings{he2016resnet,
+  author = {He, Kaiming and Zhang, Xiangyu and Ren, Shaoqing and Sun, Jian},
+  title = {Deep Residual Learning for Image Recognition},
+  booktitle = {Proc. IEEE Conf. Computer Vision and Pattern Recognition (CVPR)},
+  year = {2016},
+  doi = {10.1109/CVPR.2016.90},
+  note = {arXiv:1512.03385}
+}
+
+@misc{torchvision_resnet50_weights,
+  title = {{ResNet50\_Weights}, torchvision.models.resnet50},
+  howpublished = {\url{https://docs.pytorch.org/vision/stable/models/generated/torchvision.models.resnet50.html}},
+  note = {Accessed 2026-10-06; values verified directly}
+}
+
+@misc{torchvision_repo,
+  title = {pytorch/vision repository (licence: BSD-3-Clause)},
+  howpublished = {\url{https://github.com/pytorch/vision}},
+  note = {Licence read from the GitHub API on 2026-10-06}
+}
+
+@misc{hf_qwen25_15b,
+  title = {{Qwen/Qwen2.5-1.5B} model card, API and config},
+  howpublished = {\url{https://huggingface.co/Qwen/Qwen2.5-1.5B}},
+  note = {Accessed 2026-10-06; parameter count, licence, gating and dtype verified via the HF API and config.json}
+}
+
+@misc{qwen2025blog,
+  author = {{Qwen Team}},
+  title = {{Qwen2.5-LLM}: Extending the boundary of {LLMs}},
+  howpublished = {\url{https://qwenlm.github.io/blog/qwen2.5-llm/}},
+  note = {Accessed 2026-10-06; model table and base-model benchmark table verified}
+}
+
+@misc{hf_llama32_1b,
+  title = {meta-llama/Llama-3.2-1B model card and Llama 3.2 Community License},
+  howpublished = {\url{https://huggingface.co/meta-llama/Llama-3.2-1B}},
+  note = {Accessed 2026-10-06 (via fetch-tool summary)}
+}
+
+@misc{hf_olmo2_1b,
+  title = {allenai/OLMo-2-0425-1B model card},
+  howpublished = {\url{https://huggingface.co/allenai/OLMo-2-0425-1B}},
+  note = {Accessed 2026-10-06 (via fetch-tool summary)}
+}
+
+@misc{hf_gemma3_1b,
+  title = {google/gemma-3-1b-pt model card},
+  howpublished = {\url{https://huggingface.co/google/gemma-3-1b-pt}},
+  note = {Accessed 2026-10-06 (via fetch-tool summary); terms of use not read}
+}
+
+@misc{hf_qwen3_17b_base,
+  title = {{Qwen/Qwen3-1.7B-Base} (HF model API)},
+  howpublished = {\url{https://huggingface.co/api/models/Qwen/Qwen3-1.7B-Base}},
+  note = {Accessed 2026-10-06 (via fetch-tool summary)}
+}
+
+@inproceedings{li2017sc,
+  author = {Li, Guanpeng and Hari, Siva Kumar Sastry and Sullivan, Michael and Tsai, Timothy and Pattabiraman, Karthik and Emer, Joel and Keckler, Stephen W.},
+  title = {Understanding Error Propagation in Deep Learning Neural Network ({DNN}) Accelerators and Applications},
+  booktitle = {Proc. SC17},
+  year = {2017},
+  doi = {10.1145/3126908.3126964},
+  note = {Read as full text by researcher (direct), not re-checked by main agent}
+}
+
+@inproceedings{mahmoud2020pytorchfi,
+  author = {Mahmoud, Abdulrahman and Aggarwal, Neeraj and Nobbe, Alex and Vicarte, Jose Rodrigo Sanchez and Adve, Sarita V. and Fletcher, Christopher W. and Frosio, Iuri and Hari, Siva Kumar Sastry},
+  title = {{PyTorchFI}: A Runtime Perturbation Tool for {DNNs}},
+  booktitle = {IEEE/IFIP Int. Conf. Dependable Systems and Networks Workshops (DSN-W)},
+  year = {2020},
+  howpublished = {\url{https://research.nvidia.com/sites/default/files/pubs/2020-06_PyTorchFI%3A-A-Runtime/20-DSML-PyTorchFI.pdf}},
+  note = {No DOI located; read as full text by researcher (direct), not re-checked by main agent}
+}
+
+@inproceedings{reagen2018ares,
+  author = {Reagen, Brandon and Gupta, Udit and Pentecost, Lillian and Whatmough, Paul and Lee, Sae Kyu and Mulholland, Niamh and Brooks, David and Wei, Gu-Yeon},
+  title = {Ares: A Framework for Quantifying the Resilience of Deep Neural Networks},
+  booktitle = {Proc. 55th Design Automation Conference (DAC)},
+  year = {2018},
+  doi = {10.1145/3195970.3195997},
+  note = {Paper not opened (publisher 403); abstract only. UNVERIFIED}
+}
+
+@inproceedings{hong2019tbd,
+  author = {Hong, Sanghyun and Frigo, Pietro and Kaya, Yigitcan and Giuffrida, Cristiano and Dumitras, Tudor},
+  title = {Terminal Brain Damage: Exposing the Graceless Degradation in Deep Neural Networks Under Hardware Fault Attacks},
+  booktitle = {28th USENIX Security Symposium},
+  year = {2019},
+  note = {arXiv:1906.01017; read via fetch-tool summary only (UNVERIFIED)}
+}
+
+@misc{chai2025llmgpu,
+  author = {Chai, Duo and Liu, Zizhen and Wang, Shuhuai and Pei, Songwei and Liu, Cheng and Li, Huawei and Wang, Shangguang},
+  title = {Analysis of {LLM} Vulnerability to {GPU} Soft Errors: An Instruction-Level Fault Injection Study},
+  year = {2025},
+  eprint = {2601.19912},
+  archiveprefix = {arXiv},
+  note = {Read as full text by researcher (direct). arXiv v1 reported as dated 25 Dec 2025; consistency with the 2601 identifier UNVERIFIED}
+}
+
+@misc{das2024attentionbreaker,
+  author = {Das, Sanjay and Bhattacharya, Swastik and Kundu, Souvik and Kundu, Shamik and Menon, Anand and Raha, Arnab and Basu, Kanad},
+  title = {{AttentionBreaker}/{GenBFA}: Bit-Flip Attacks on {LLMs}},
+  year = {2024},
+  eprint = {2411.13757},
+  archiveprefix = {arXiv},
+  note = {Abstract read via fetch-tool summary (UNVERIFIED)}
+}
+
+@misc{guo2025sbfa,
+  author = {Guo, Jingkai and Chakrabarti, Chaitali and Fan, Deliang},
+  title = {{SBFA}: Single Sneaky Bit Flip Attack to Break Large Language Models},
+  year = {2025},
+  eprint = {2509.21843},
+  archiveprefix = {arXiv},
+  note = {Via fetch-tool summary only (UNVERIFIED)}
+}
+
+@inproceedings{hochschild2021cores,
+  author = {Hochschild, Peter H. and Turner, Paul and Mogul, Jeffrey C. and Govindaraju, Rama and Ranganathan, Parthasarathy and Culler, David E. and Vahdat, Amin},
+  title = {Cores that don't count},
+  booktitle = {Workshop on Hot Topics in Operating Systems (HotOS '21)},
+  year = {2021},
+  doi = {10.1145/3458336.3465297},
+  note = {Read as full text by researcher (direct), not re-checked by main agent}
+}
+
+@misc{dixit2021sdc,
+  author = {Dixit, Harish Dattatraya and Pendharkar, Sneha and Beadon, Matt and Mason, Chris and Chakravarthy, Tejasvi and Muthiah, Bharath and Sankar, Sriram},
+  title = {Silent Data Corruptions at Scale},
+  year = {2021},
+  eprint = {2102.11245},
+  archiveprefix = {arXiv},
+  note = {Read as full text by researcher (direct), not re-checked by main agent}
+}
+
+@misc{grattafiori2024llama3,
+  author = {Grattafiori, Aaron and others},
+  title = {The {Llama} 3 Herd of Models},
+  year = {2024},
+  eprint = {2407.21783},
+  archiveprefix = {arXiv},
+  note = {Section 3.3.4 and Table 5 read via ar5iv through a fetch tool; the Faulty-GPU row is inconsistent (check the PDF)}
+}
+
+@misc{ma2025sdctraining,
+  author = {Ma, Jeffrey and Pei, Hengzhi and Lausen, Leonard and Karypis, George},
+  title = {Understanding Silent Data Corruption in {LLM} Training},
+  year = {2025},
+  eprint = {2502.12340},
+  archiveprefix = {arXiv},
+  note = {Abstract only}
+}
+
+% ---- Phase 1: NVIDIA reference LLM (main agent, 2026-10-06; Aiden's choice) ----
+
+@misc{hf_nemotron3_nano_4b,
+  title = {{nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16} model card, API and config},
+  howpublished = {\url{https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Nano-4B-BF16}},
+  note = {Accessed 2026-10-06; parameter count, gating, dtype and architecture verified via the HF API and config.json}
+}
+
+@misc{nvidia_nemotron_oml,
+  author = {{NVIDIA Corporation}},
+  title = {{NVIDIA} Nemotron Open Model License},
+  howpublished = {\url{https://www.nvidia.com/en-us/agreements/enterprise-software/nvidia-nemotron-open-model-license/}},
+  note = {Accessed 2026-10-06; grant and redistribution terms read directly}
+}
