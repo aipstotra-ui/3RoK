@@ -31,8 +31,8 @@ workloads:
               note: "Commercially usable; derivative works allowed; redistribution needs a copy of the licence and the notice 'Licensed by NVIDIA Corporation under the NVIDIA Nemotron Model License.' Not gated."}
     note: >-
       Hybrid Mamba-Transformer (nemotron_h, 42 layers; config hybrid_override_pattern: mostly Mamba-2 blocks with a
-      few attention blocks). Chosen by Aiden (NVIDIA-built, permissive licence). Published bit-flip studies so far
-      cover Transformers only, so Phase 4 results for this architecture have no external comparison point.
+      few attention blocks). Chosen by Aiden (NVIDIA-built, permissive licence). The fault-injection studies
+      reviewed here cover CNNs and Transformer LLMs; none covers Mamba/SSM hybrids (no targeted literature search done).
       No benchmark recorded yet (model-card scores not verified).
 
   - id: nemotron3-nano-4b-training-step

@@ -26,7 +26,7 @@ Every value in `validation/reference/workloads.yaml` is **[verified]**.
 - **NVIDIA Nemotron Open Model License** (`nvidia_nemotron_oml`) **[verified]**, read directly:
   - "Works are commercially usable. You are free to create and distribute Derivative Works. NVIDIA does not claim ownership to any outputs."
   - §3 Redistribution: give recipients a copy of the licence, keep the attribution notices, and include the notice "Licensed by NVIDIA Corporation under the NVIDIA Nemotron Model License."
-- **Why Nemotron:** Aiden prefers NVIDIA-built models (audience fit, origin). It is a hybrid architecture, and the published bit-flip studies below cover Transformers only. So Phase 4 results for it would be new, and also have no external comparison point.
+- **Why Nemotron:** Aiden prefers NVIDIA-built models (audience fit, origin). It is a hybrid architecture. The fault-injection studies reviewed below cover CNNs and Transformer LLMs; none covers Mamba/SSM hybrids (no targeted literature search done). Phase 4 results for it may therefore lack an external comparison point.
 
 ## Alternatives considered (not in workloads.yaml)
 - **Qwen2.5-1.5B** (`hf_qwen25_15b`, `qwen2025blog`) **[verified]**: 1,543,714,304 params, Apache-2.0, ungated, bf16, MMLU 60.9 (base). It was the first pick on licence grounds and was replaced by Aiden's NVIDIA preference.
