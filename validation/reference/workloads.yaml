@@ -10,8 +10,9 @@ workloads:
     role:
       value: calibration
       reason: >-
-        Standard subject of published bit-flip studies (mahmoud2020pytorchfi; hong2019tbd, the latter UNVERIFIED) and
-        small enough for millions of injections, so Phase 4 can check its fault-injection tools against the literature.
+        Intended calibration target: a standard subject of published bit-flip studies and small enough for millions of
+        injections. No verified ResNet-50-specific reference value exists yet (PyTorchFI gives only a cross-network
+        figure; hong2019tbd is UNVERIFIED); one must be named before Phase 4 relies on it.
         Not a stand-in for orbital AI: a 2015 CNN with ~100 MB of weights (Aiden, 2026-10-06).
     model_name: torchvision ResNet50_Weights.IMAGENET1K_V1
     parameters: {value: 25557032, source: torchvision_resnet50_weights, locator: "weights table: num_params", status: CONFIRMED}

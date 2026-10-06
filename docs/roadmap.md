@@ -21,7 +21,7 @@ Your decisions so far:
 2. **Correct reference frames and time scales:** TEME, GCRS and ITRS frames; UTC, TT and UT1 time. Units are explicit at every boundary. Reviewers check these first.
 3. **Answers in their language:**
    - **For NVIDIA:** silent-data-corruption rate per GPU-hour, HBM/SRAM upsets, ECC and scrub effects, checkpoint overhead and goodput, and accuracy loss of a real model under the predicted upset rate.
-   - **For SpaceX:** fleet-level answers for a whole shell (expected failures per year, compute availability, decay under storms), validated on the real Feb 2022 Starlink loss.
+   - **For SpaceX:** fleet-level answers for a whole shell (expected failures per year, compute availability, decay under storms), tested against the real Feb 2022 Starlink loss, with the known storm-time under-prediction of empirical density models reported.
 4. **Honest uncertainty:** ranges, not single numbers. Assumptions are typed and listed with every result. No overclaiming anywhere: README, docs or UI.
 5. **Engineering polish:**
    - `pip install` and `npm i` just work, with typed APIs and a CLI.

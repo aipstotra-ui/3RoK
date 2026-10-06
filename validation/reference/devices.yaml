@@ -103,13 +103,13 @@ devices:
       - {quantity: tid_target, effect: TID, kind: target, value: 100, unit: krad(Si), conditions: "manufacturer target, not a test result",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
     see:
-      - {quantity: seu_let_threshold, effect: SEU, value: 8.19, unit: MeV cm2/mg, conditions: "heavy ions",
+      - {quantity: seu_let_threshold, kind: rating, effect: SEU, value: 8.19, unit: MeV cm2/mg, conditions: "heavy ions",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
-      - {quantity: seu_cross_section, effect: SEU, value: 5.55e-12, unit: cm2/bit, conditions: "heavy ions, LET 60.88",
+      - {quantity: seu_cross_section, kind: rating, effect: SEU, value: 5.55e-12, unit: cm2/bit, conditions: "heavy ions, LET 60.88",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
-      - {quantity: sefi_let_threshold, effect: SEFI, value: 2.6, unit: MeV cm2/mg, conditions: "heavy ions",
+      - {quantity: sefi_let_threshold, kind: rating, effect: SEFI, value: 2.6, unit: MeV cm2/mg, conditions: "heavy ions",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
-      - {quantity: sefi_cross_section, effect: SEFI, value: 2.22e-4, unit: cm2/device, conditions: "heavy ions, LET 60.88",
+      - {quantity: sefi_cross_section, kind: rating, effect: SEFI, value: 2.22e-4, unit: cm2/device, conditions: "heavy ions, LET 60.88",
          source: teledyne_ddr4t04g72, locator: "product page", status: CONFIRMED}
     sel:
       - {quantity: sel_let_threshold, effect: SEL, value: 60.88, bound: lower, unit: MeV cm2/mg,
