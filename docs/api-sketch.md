@@ -60,6 +60,26 @@ def storm_drag_ratio(
     """Ratio of storm-time to quiet-baseline drag on one orbit (see the Starlink G4-7 case)."""
 ```
 
+```python
+# orbitlife.radiation
+def tid_dose_rad_si(
+    altitude_km: float,
+    start_epoch_utc: str,
+    duration_yr: float,
+    shielding_mm_al: float,
+    geometry: Literal["solid_sphere_center", "slab_2pi_thick_backing"],
+    inclination_deg: float | None = None,
+    sun_synchronous: bool = False,
+    ltan_h: float | None = None,
+    target_material: Literal["si"] = "si",
+    trapped_proton_model: str = "ap8min",
+    trapped_electron_model: str = "ae8max",
+    solar_proton_model: str | None = "esp_psychic",
+    solar_proton_confidence: float = 0.80,
+) -> float:
+    """Total ionizing dose over the mission behind aluminium shielding (trapped + solar protons)."""
+```
+
 ## Top-level API
 
 ```python
