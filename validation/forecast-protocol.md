@@ -60,18 +60,19 @@ Every input is defined by its **availability time** (when that version of the va
    - (c) The same test applies to every baseline builder: persistence, recurrence, climatology, the O'Brien–McPherron start state and drivers, the Newell window (§4.5), and the NOAA issue selector (§4.4).
    - (d) It also applies to each step of the model's own fallback chain (§3.6).
 6. **Every forecast at every T (no dropping for missing inputs).** Our model must issue a forecast at every issue time, using this pre-registered fallback chain:
-   1. The full model, when its solar-wind window is usable: at least 2 of the 3 hourly slots ending at T − 1 h, T − 2 h and T − 3 h are valid (§3.2).
+   1. The full model, when its solar-wind window is usable: at least 2 of the 3 hourly slots ending at T − 1 h, T − 2 h and T − 3 h are valid (§3.2). A missing slot is masked and filled with the mean of the valid slots, with the same masking used in training.
    2. Otherwise, a **no-solar-wind sub-model**: the same architecture without solar-wind features, trained, early-stopped and calibrated on the same splits.
-   3. If the Kp or Dst history it needs is also missing, the dressed persistence forecast; if that is missing too, climatology.
+   3. If the Kp or Dst history that the selected model (full or sub-model) needs is missing, the dressed persistence forecast; if that is missing too, climatology.
 
    - The count of each fallback step is reported overall and for storm-only targets (§5).
    - **No T is dropped for missing inputs**, for any model. The only allowed drops are missing Dst truth (§1) and a missing NOAA file (§4.4).
-   - TypeScript parity (§6) covers the fallback path with its own golden fixtures.
+   - TypeScript parity (§6) covers every step of the fallback chain with its own golden fixtures.
+   - The calibration shift (§4.7) is fitted **per component** (full model and sub-model separately) on all calibration T where that component's inputs exist.
 
 ## 4. Baselines (scored on the same issue times and the same inputs rules)
 1. **Persistence:** the latest value available at T (§3.3 and §3.4).
 2. **Climatology:** fitted on **all data available before the test start** (≤ 2021-12-31), conditioned on UT block and calendar month.
-3. **27-day recurrence:** the value 27 days earlier, using the version available at T.
+3. **27-day recurrence:** the value 27 days earlier, using the version available at T. If it is missing, the dressed persistence forecast is used, and the count is reported.
 4. **NOAA SWPC 3-day forecast:**
    - **Headline comparison at matched information.** Our forecasts issued at T ∈ {00:00, 12:00} UT are compared with NOAA's 00:30 / 12:30 issues for the same target blocks. NOAA gets 30 min more data, which is conservative for us.
    - **Issue selection:** use the header `:Issued:` time, and the newest (amended) issue at or before T + 30 min.
@@ -158,14 +159,14 @@ Every input is defined by its **availability time** (when that version of the va
 - The test split is scored **once for headline purposes** per (target, test split), in total, not once per model version. Kp and Dst have separate headlines.
 - A **look** is any computation that combines a candidate model's output with test-period targets, including partial scoring, storm plots, and debugging on test targets.
 - Every later evaluation on test is a logged **"test reused (look n)"** with a running count. It may be reported, but it can never be the headline.
-- Each `validation/score-log.md` row records: date, model, version, test set, protocol commit hash, look number, model artifact sha256 (the ONNX file), truth sha256 (Kp and Dst files, §1), input manifest sha256 (the archived input snapshots, since quicklook files are overwritten), metrics file, and commit.
-- **Parity:** only the scored artifact (by sha256) may ship. TypeScript features must match Python golden fixtures built from **live-format inputs** (RTSW, nowcast Kp, quicklook Dst).
+- Each `validation/score-log.md` row records: date, model, version, test set, protocol commit hash, look number, model bundle sha256 (a manifest hashing every artifact in the fallback chain: full model, sub-model, calibration-shift tables and dressing tables), truth sha256 (Kp and Dst files, §1), input manifest sha256 (the archived input snapshots, since quicklook files are overwritten), metrics file, and commit.
+- **Parity:** only the scored bundle (by its manifest sha256) may ship. TypeScript features must match Python golden fixtures built from **live-format inputs** (RTSW, nowcast Kp, quicklook Dst).
 
 ## 7. February 2022 storm replay (not a score)
 On 2022-02-03/04 a moderate storm raised drag enough to destroy most of a fresh Starlink batch (the `drag-starlink-g47-*` cases). The replay shows how a frozen model behaves on that event.
 - **Window:** issue times every 3 h from 2022-01-29 00:00 to 2022-02-08 21:00 UT. That lies inside the unused January–February 2022 gap (§2) and clear of both purges, so it is **not** test data and not a look.
 - **No development use.** January–February 2022 is never used for development, including exploratory analysis.
-- **Frozen model:** the replay runs only after the headline artifact's sha256 is in the score log, and with that same artifact. It may never be used for model selection, tuning or calibration. Every replay run is logged in the score log's "Replays" table (date, artifact sha256, commit).
+- **Frozen model:** the replay runs only after the headline bundle's sha256 is in the score log, and with that same bundle. It may never be used for model selection, tuning or calibration. Every replay run is logged in the score log's "Replays" table (date, bundle sha256, protocol commit, outputs file, commit).
 - **Output:** per-issue quantile fans for Kp and Dst at each horizon, with the truth, persistence and both physics baselines. Per-block errors may be listed, but no aggregate score or skill is computed from it.
   - NOAA issues are included only if a pre-2022-03 archive is sourced. The cited archive starts in 2022-03, and earlier coverage is UNVERIFIED.
 - **Truth for the window** follows §1 (February 2022 Dst is provisional).
