@@ -1,0 +1,22 @@
+id: forecast-newell-coupling-zero-field
+title: Newell coupling is zero when the transverse IMF is zero
+module: forecast
+check: implementation
+target: orbitlife.forecast.newell_coupling
+inputs:
+  v_km_s: 400.0
+  by_gsm_nT: 0.0
+  bz_gsm_nT: 0.0
+quantity: dPhi_MP/dt in native units (km/s)^(4/3) nT^(2/3), no 1e-3 factor
+unit: (km/s)^(4/3) nT^(2/3)
+reference:
+  value: 0.0
+  source: newell2007universal
+  locator: Limit B_T -> 0 of v^(4/3) B_T^(2/3) sin^(8/3)(theta_c/2); protocol v2 section 4.5 sets 0
+  status: UNVERIFIED
+  computed_with: B_T^(2/3) -> 0 and sin is bounded, so the limit is 0; arccos(0/0) would give NaN
+tolerance:
+  kind: abs
+  value: 1.0e-12
+  rationale: Exact zero; any NaN fails.
+notes: Guards the 0/0 clock angle.

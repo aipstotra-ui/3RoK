@@ -1,0 +1,21 @@
+id: forecast-vbs-northward
+title: VBs from solar-wind speed and GSM Bz (northward IMF)
+module: forecast
+check: implementation
+target: orbitlife.forecast.vbs_mV_m
+inputs:
+  v_km_s: 500.0
+  bz_gsm_nT: 4.0
+quantity: VBs = V * Bs * 1e-3 with Bs = -Bz when Bz < 0, else 0
+unit: mV/m
+reference:
+  value: 0.0
+  source: obrien2000ring
+  locator: VBs in mV/m (abstract); rectified Bs convention from secondary sources
+  status: UNVERIFIED
+  computed_with: Bz > 0, so Bs = 0 and VBs = 0; unit algebra 1 km/s * 1 nT = 1e-6 V/m = 1e-3 mV/m
+tolerance:
+  kind: abs
+  value: 1.0e-12
+  rationale: Exact arithmetic.
+notes: V is the bulk flow speed; bulk vs |Vx| is UNVERIFIED (protocol v2 section 4.5).

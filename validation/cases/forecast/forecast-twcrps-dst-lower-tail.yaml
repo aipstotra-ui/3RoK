@@ -1,0 +1,45 @@
+id: forecast-twcrps-dst-lower-tail
+title: Threshold-weighted CRPS (Dst <= -50 nT) uses the lower-tail projection min(z, t)
+module: forecast
+check: implementation
+target: orbitlife.forecast.twcrps_from_quantiles
+inputs:
+  quantiles_21:
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  - -30.0
+  observation: -120.0
+  threshold: -50.0
+  tail: lower
+quantity: twCRPS with weight 1{z <= -50}
+unit: nT
+reference:
+  value: 70.0
+  source: allen2023transformed
+  locator: arXiv 2202.12732 (preprint), Section 2.1, Eq. (6) with nu = Lebesgue measure on (-inf, t]; its chaining
+    function (Proposition 1, Eq. (7)) is v(z) = min(z, t)
+  status: CONFIRMED
+  computed_with: '|min(-30, -50) - min(-120, -50)| = |-50 + 120| = 70; using the upper-tail max would give 0'
+tolerance:
+  kind: abs
+  value: 1.0e-09
+  rationale: Exact closed form for a point mass.
+notes: Storms are negative Dst, so the Dst weight is on the lower tail (protocol §5).

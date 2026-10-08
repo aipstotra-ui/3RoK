@@ -1,0 +1,22 @@
+id: forecast-newell-coupling-clock-angle
+title: Newell coupling for a purely dawn-dusk IMF (clock angle 90 degrees)
+module: forecast
+check: implementation
+target: orbitlife.forecast.newell_coupling
+inputs:
+  v_km_s: 400.0
+  by_gsm_nT: 5.0
+  bz_gsm_nT: 0.0
+quantity: dPhi_MP/dt in native units (km/s)^(4/3) nT^(2/3), no 1e-3 factor
+unit: (km/s)^(4/3) nT^(2/3)
+reference:
+  value: 3419.952
+  source: newell2007universal
+  locator: As forecast-newell-coupling-southward; theta_c = atan2(|By|, Bz) = pi/2
+  status: UNVERIFIED
+  computed_with: 'sin(pi/4)^(8/3) = 2^(-4/3) = 0.396850: 8617.739 * 0.396850 = 3419.952'
+tolerance:
+  kind: rel
+  value: 1.0e-06
+  rationale: Closed-form arithmetic.
+notes: Checks the sin^(8/3)(theta_c/2) exponent at 90 degrees. The quadrant handling is checked by forecast-newell-coupling-oblique.

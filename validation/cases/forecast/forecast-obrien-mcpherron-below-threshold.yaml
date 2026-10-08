@@ -1,0 +1,25 @@
+id: forecast-obrien-mcpherron-below-threshold
+title: O'Brien-McPherron Dst decays without injection when VBs is below threshold
+module: forecast
+check: implementation
+target: orbitlife.forecast.obrien_mcpherron_dst_nT
+inputs:
+  dst0_nT: -50.0
+  pdyn_nPa: 4.0
+  vbs_mV_m: 0.3
+  hours: 6.0
+  integration: analytic_constant_driver
+quantity: Dst six hours later
+unit: nT
+reference:
+  value: -34.0065
+  source: obrien2000ring
+  locator: Abstract (b, c, tau and 'no injection below a threshold VBs'); Ec = 0.49 mV/m from secondary sources
+  status: UNVERIFIED
+  computed_with: Q = 0 (VBs 0.3 < Ec); tau = 2.40 exp(9.74/4.99) = 16.9010 h; Dst* = -53.52 exp(-6/tau); Dst = Dst*
+    + 3.52
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: Closed-form arithmetic; 0.001 nT is rounding of the stored value only.
+notes: Checks the threshold and the VBs-dependent decay time, independent of the unverified slope.

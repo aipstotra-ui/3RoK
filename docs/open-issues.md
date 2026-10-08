@@ -71,6 +71,13 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **SWPC 2012–13 G1+ contingency counts** are in an image (not re-checked).
 - **Protocol `assumption` latencies** (validation/forecast-protocol.md §3): RTSW 1 h, GFZ nowcast Kp (exclude the newest block), Kyoto quicklook Dst 2 h. Each must be replaced with a sourced value before training.
 - **Archived real-time inputs** (RTSW, nowcast Kp, quicklook Dst) for 2022–2025: find a source, or the headline result must be labelled "definitive-input hindcast" (protocol §3.1).
+- **Physics-baseline constants are partly UNVERIFIED** (protocol v2 §4.5): the O'Brien & McPherron injection slope 4.4 and Ec (0.49 vs 0.5 mV/m), the Bs convention, and the Newell coupling formula and units. The publishers' pages block automated readers, so **Aiden needs to download two free PDFs** (JGR 105, 7707, doi 10.1029/1998JA000437; JGR 112, A01206, doi 10.1029/2006JA012015) into a local folder outside git. The 8 cases that depend on them (2 O'Brien-McPherron, 4 Newell, 2 VBs) report PASS_UNVERIFIED_REF until then.
+- **Protocol v2 `assumption` and UNVERIFIED items** (validation/forecast-protocol.md §3.6, §4.5, §5), each to be sourced or kept as a labelled design choice:
+  - maximum driver age 3 h; maximum start-state age 6 h; the Newell 2-of-3-slots rule; the 3-hour Newell window
+  - the square-root mapping in the Newell Kp baseline (no published Kp regression found)
+  - the too-few-events limits (10 events, 3 episodes)
+  - the OMNI flow-pressure formula (alpha term) and whether it matches the P that O'Brien & McPherron fitted
+  - V as bulk speed vs |Vx| in VBs
 - **NOAA reader cases still to add:** a missing file and an amended (reissued) forecast. No real examples found yet.
 
 ## Phase 1 exit gaps (validation-analyst, 2026-10-06)
@@ -96,12 +103,7 @@ Ranked by damage to expert trust. Each needs either a Phase 1 extension or a har
 6. ~~**Orbit geometry**~~: closed by E3. Added Orekit beta (2), umbra/penumbra (4), ITRS→GCRS (3) and Vallado 2006 SGP4 (3) cases. Still open: a published (non-computed) beta reference; Boain Fig. 8 was not used, because reading values off a figure is imprecise.
 7. **Shields-1 same-model cases:** reproduce the source's NOVICE values (35.82, 27.38 rad(Si)) so physics residuals can be attributed.
 8. **Dose coverage:** self-run SPENVIS for every reference mission, with all settings recorded.
-9. **Forecast protocol v2** (allowed now, since no test score exists):
-   - Feb 2022 replay (non-headline)
-   - threshold-weighted CRPS or forecast-conditioned storm diagnostics
-   - tail quantiles 0.01 and 0.99, or declare Kp ≥ 7 scores uninformative
-   - one physics baseline per target (Newell coupling for Kp; Burton or O'Brien-McPherron for Dst)
-   - check Kyoto provisional Dst coverage for 2024–25
+9. ~~**Forecast protocol v2**~~: closed by E5 (protocol v2: tail quantiles, twCRPS, too-few-events rule, O'Brien-McPherron and Newell baselines, Kyoto coverage, February 2022 replay). Still open: the paper bodies of O'Brien & McPherron 2000 and Newell et al. 2007 (see "Forecast protocol gaps").
 10. **Thermal:** one textbook radiative-balance case before Phase 2 thermal.
 11. **Schema and research hygiene:**
     - a status CONFIRMED_ABSTRACT for abstract-only reads (coelho2025tx2, ryu2025ddr4temp, dang2022starlink, kataoka2022starlink)

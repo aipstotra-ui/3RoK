@@ -1,0 +1,24 @@
+id: forecast-newell-coupling-oblique
+title: Newell coupling for an oblique southward IMF with negative By (quadrant check)
+module: forecast
+check: implementation
+target: orbitlife.forecast.newell_coupling
+inputs:
+  v_km_s: 400.0
+  by_gsm_nT: -3.0
+  bz_gsm_nT: -4.0
+quantity: dPhi_MP/dt in native units (km/s)^(4/3) nT^(2/3), no 1e-3 factor
+unit: (km/s)^(4/3) nT^(2/3)
+reference:
+  value: 7488.302
+  source: newell2007universal
+  locator: As forecast-newell-coupling-southward; theta_c = atan2(3, -4) = arccos(-0.8) = 2.4981 rad
+  status: UNVERIFIED
+  computed_with: B_T = 5 nT; sin(theta_c/2) = sqrt((1 + 0.8)/2) = 0.948683; 400^(4/3) * 5^(2/3) * 0.948683^(8/3)
+    = 7488.3018
+tolerance:
+  kind: rel
+  value: 1.0e-06
+  rationale: Closed-form arithmetic.
+notes: A naive atan(By/Bz) gives theta = 0.6435 rad and 400.0, so a quadrant bug fails. By = +3 must give the same
+  value (sin(theta_c/2) is even in By).

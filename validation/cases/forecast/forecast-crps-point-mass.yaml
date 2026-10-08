@@ -1,0 +1,43 @@
+id: forecast-crps-point-mass
+title: CRPS of a point-mass quantile forecast equals the absolute error
+module: forecast
+check: implementation
+target: orbitlife.forecast.crps_from_quantiles
+inputs:
+  quantiles_21:
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  - 4.0
+  observation: 5.0
+quantity: CRPS (2 x mean pinball loss over the 19 inner levels 0.05..0.95, after sorting all 21)
+unit: Kp
+reference:
+  value: 1.0
+  source: allen2023transformed
+  locator: 'arXiv 2202.12732 (preprint), Section 2.1: Eq. (6) twCRPS; Proposition 1, Eq. (7): twCRPS = E|v(X) -
+    v(y)| - 1/2 E|v(X) - v(X'')|; v = identity'
+  status: CONFIRMED
+  computed_with: 'identity: for a point mass at x, E|X - y| = |x - y| and E|X - X''| = 0, so CRPS = |4 - 5| = 1'
+tolerance:
+  kind: abs
+  value: 1.0e-09
+  rationale: 'Exact for this estimator: the mean of tau over the 19 symmetric levels is exactly 0.5.'
+notes: Checks the protocol §5 CRPS estimator (validation/forecast-protocol.md) against a closed-form value.
