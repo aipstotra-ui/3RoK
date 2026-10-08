@@ -266,12 +266,14 @@ Exit: E1–E9 merged (or a documented reason for each that cannot be done), and 
   - Make the leakage test exclusive, and add a hypothesis property test: changing any data at or after T must leave the features unchanged.
   - Real-time solar wind gets the same L1-to-bow-shock lag treatment as OMNI.
 - **Splits:** train up to 2016; early stopping 2017–19; calibration 2020–21; test 2022–25; 48 h purges; each set scored once and logged.
-- **Model:** multi-quantile LightGBM (0.05–0.95) calibrated with conformalized quantile regression; at most 8 self-hosted ONNX files.
+- **Model:** multi-quantile LightGBM at 21 levels (0.01, 0.05–0.95, 0.99), calibrated with the per-level shift in `validation/forecast-protocol.md` §4.7. A no-solar-wind sub-model is the pre-registered fallback (§3.6). All self-hosted ONNX files ship as one hashed bundle.
 - **Metrics:**
   - CRPS and pinball loss, coverage overall and in storms
-  - baselines: persistence, climatology, 27-day recurrence, and **NOAA SWPC's archived 3-day forecast**
+  - threshold-weighted CRPS at the storm thresholds (protocol v2)
+  - baselines: persistence, climatology, 27-day recurrence, **NOAA SWPC's archived 3-day forecast**, and the physics baselines O'Brien–McPherron (Dst) and a Newell-coupling regression (Kp)
   - storm-event scores: hit rate, false-alarm rate, Heidke skill score, Brier score, reliability diagrams
   - model cards
+  - the February 2022 storm replay (protocol v2 §7, not a score)
 - **Decision layer:** `decide(quantiles, CostMatrix)` chooses by expected cost. Measure regret against the oracle, always-nominal and a persistence threshold.
 - **Exit:**
   - `ml-auditor` is clean.
