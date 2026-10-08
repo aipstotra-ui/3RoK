@@ -21,5 +21,6 @@ tolerance:
   value: 0.01
   rationale: "Pure method and unit check (flux x sigma_sat) against a 3-significant-figure published value."
 notes: >-
-  Unit and bookkeeping check only (flux x sigma_sat). The environment flux is an input, not computed, because the source does not state the
+  Unit and bookkeeping check only (flux x sigma_sat). TI's flux convention (per sr vs omnidirectional, Earth shadow)
+  is UNKNOWN (ADR 0007), so this case must not be used to validate geometric factors. The environment flux is an input, not computed, because the source does not state the
   CREME96 ISS orbit parameters. Reproducing the flux needs those parameters (docs/open-issues.md).

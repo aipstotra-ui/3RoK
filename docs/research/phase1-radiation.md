@@ -99,3 +99,19 @@ All rates are in µGy/day. Table 6 has 10 phases (2009–2016).
   - The rate is TI's conservative estimate under its convention, **not a strict upper bound**. The 95% limit bounds σ only at LET_EFF 43 (the highest LET tested with no SEL, not an observed onset). σ = 0 below 43 and σ ≤ σ_bound above 43 are assumptions of the square approximation (physics-reviewer, PR #13).
 - **TI SLVK046** (`ti2025slvk046`) **[verified, method text]**: the method note behind the report. CREME96 LEO-ISS and GEO integral flux vs LET at worst week, 100 mils Al; the Weibull fit is simplified to a square approximation. The researcher reported a GEO worked example in it (9.17e-9 /day) via a summary page, but it was not found in the PDF text (UNVERIFIED).
 - **No fully specified published LEO SEU (per-bit) worked example** found and readable. Tylka 1997 and Petersen 2011 are paywalled. Leads not opened: Engel et al. 2006 (BYU facpub/1307), ESCIES Sturesson slides.
+
+## Flux geometry (researcher on Sonnet, 2026-10-06; E4 / ADR 0007)
+- **AP8** gives omnidirectional fluxes over 4π. "Omnidirectional does not imply isotropic." Directionality is usually ignored for spinning or randomly oriented LEO spacecraft, but that may not suit orientation-stabilised ones (`cremeMC_omni_trapped_proton`) [PROXY].
+- **CREME96 LETSPEC:** integral LET flux in nuclei/m²-s-sr (`cremeMC_letspec_help`) [PROXY].
+- **CREME96 TRP:** "protons/m2-s-sr-MeV" (`cremeMC_trp_help`) [PROXY; the AP8 → per-sr step is UNVERIFIED].
+- **SPENVIS CREME help** (`spenvis_creme_seu_help`):
+  - RPP equation U = π·A·(X/e)·Qc·∫D[p(L)]F(L)/L² dL, with A the surface area of the sensitive volume and F per sr.
+  - Proton equation U = 10⁻⁴·4π·∫f(E)σ(E)dE.
+
+  **[verified: both equation images viewed by the main agent]**.
+- **ECSS-E-ST-10-12C §3.2** definitions of omnidirectional, directional and isotropic flux (`ecss2008st1012c`) [PROXY].
+- **ECSS-E-HB-10-12A** (`ecss2010hb1012a`) [text extracted from the .doc; section numbers not recovered]:
+  - test beams are usually at normal incidence, and σ can vary by almost an order of magnitude with angle
+  - σ_max(E) is the practical fix
+- **Cauchy's theorem:** the average projected area of a convex solid is ¼ of its surface area (`slepian2012averageprojectedarea`) [PROXY].
+- **Not opened** (paywalled), cited only through SPENVIS: Adams 1983 (IEEE TNS 30:4475), Tylka 1997 (IEEE TNS 44(6)), Petersen 2011, Pickel & Blandford 1978.
