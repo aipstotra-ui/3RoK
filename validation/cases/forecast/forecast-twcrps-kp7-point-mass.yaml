@@ -1,0 +1,45 @@
+id: forecast-twcrps-kp7-point-mass
+title: Threshold-weighted CRPS (Kp >= 7) projects forecast and observation onto [7, inf)
+module: forecast
+check: implementation
+target: orbitlife.forecast.twcrps_from_quantiles
+inputs:
+  quantiles:
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  - 6.0
+  levels: inner19
+  observation: 8.0
+  threshold: 7.0
+  tail: upper
+quantity: twCRPS with weight 1{z >= 7}
+unit: Kp
+reference:
+  value: 1.0
+  source: allen2023transformed
+  locator: 'arXiv 2202.12732 (preprint), Section 2.1: Eq. (6) twCRPS; Proposition 1, Eq. (7): twCRPS = E|v(X) -
+    v(y)| - 1/2 E|v(X) - v(X'')|; v(z) = max(z, t) for weight 1{z >= t} (Section 2.1, after Remark 1)'
+  status: CONFIRMED
+  computed_with: '|max(6, 7) - max(8, 7)| = 1 (point mass); the unweighted CRPS would be 2, so a missing projection
+    fails'
+tolerance:
+  kind: abs
+  value: 1.0e-09
+  rationale: Exact closed form for a point mass.
+notes: Projection is applied to each sorted quantile; max(., t) is non-decreasing, so it maps quantiles to quantiles.

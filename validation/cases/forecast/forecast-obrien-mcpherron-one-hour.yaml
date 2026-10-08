@@ -1,0 +1,27 @@
+id: forecast-obrien-mcpherron-one-hour
+title: O'Brien-McPherron Dst after 1 h with a constant driver above threshold
+module: forecast
+check: implementation
+target: orbitlife.forecast.obrien_mcpherron_dst_nT
+inputs:
+  dst0_nT: -50.0
+  pdyn_nPa: 4.0
+  vbs_mV_m: 3.0
+  hours: 1.0
+  integration: analytic_constant_driver
+quantity: Dst one hour later
+unit: nT
+reference:
+  value: -54.4912
+  source: obrien2000ring
+  locator: Abstract (Dst* correction b = 7.26, c = 11; tau = 2.40 exp[9.74/(4.69 + VBs)] h); injection Q = -4.4
+    (VBs - 0.49) nT/h from secondary sources
+  status: UNVERIFIED
+  computed_with: Dst*0 = -50 - 7.26*2 + 11 = -53.52; Q = -4.4*(3 - 0.49) = -11.044 nT/h; tau = 8.5169 h; Dst*(1
+    h) = Q tau + (Dst*0 - Q tau) exp(-1/tau) = -58.0112; Dst = Dst* + 7.26*2 - 11
+tolerance:
+  kind: abs
+  value: 0.001
+  rationale: Closed-form arithmetic; 0.001 nT is rounding of the stored value only.
+notes: 'UNVERIFIED until the paper body is read: the slope 4.4 and threshold Ec = 0.49 mV/m (one secondary source
+  gives 0.5, which would give -54.4912 + 0.08 nT here).'

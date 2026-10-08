@@ -63,3 +63,40 @@ For the target block 2025-10-01 21-00UT, the two issues disagree:
 - the 1230 UTC issue (`202510011230`) gives **5.67 (G2)**
 
 This pair is used in `validation/cases/forecast/forecast-noaa-issue-selection-*.yaml`.
+
+## E5 additions (researcher on Sonnet, 2026-10-08; protocol v2)
+The publisher pages for the JGR and JBES papers returned HTTP 403 to the researcher and showed a bot check to the main agent's browser. The main agent did not bypass it, so those papers' bodies were **not read**.
+
+### O'Brien & McPherron 2000 (`obrien2000ring`), Dst physics baseline
+- **[direct, abstract only]** via EarthRef ERR/23843:
+  - Dst* = Dst − 7.26·P^½ + 11 nT, with P in nPa.
+  - τ = 2.40·exp[9.74/(4.69 + VBs)] h, with VBs in mV/m. τ depends on VBs, not on Dst.
+  - Fitted to 30 years of hourly data; valid for Dst > −150 nT. The Burton injection form is "essentially correct, with no injection below a threshold VBs".
+- **UNVERIFIED (secondary only):**
+  - dDst*/dt = Q − Dst*/τ; Q = −4.4·(VBs − Ec) nT/h, with Ec = 0.49 mV/m.
+  - One secondary source (arXiv 1903.08466, Eq. 7) writes 0.5 instead. Protocol v2 uses 0.49 and reports 0.5 as a sensitivity run.
+  - Bs as −Bz(GSM) for Bz < 0 is the usual convention; not seen in the source.
+- DOI correction: 10.1029/**1998**JA000437 (not 1999).
+
+### Burton, McPherron & Russell 1975 (`burton1975empirical`)
+- Constants were read only on the UC Berkeley SPRG page [PROXY]: a = 3.6×10⁻⁵ s⁻¹ (7.7 h), Ec = 0.5 mV/m, d = −1.5×10⁻³ nT/s per mV/m, b = 0.20 nT/(eV/cm³)^½, c = 20 nT.
+- **Not used** for any number. Cited only as the origin of the injection–decay form.
+
+### Newell et al. 2007 (`newell2007universal`), Kp physics baseline
+- **UNVERIFIED (secondary only):** dΦMP/dt = v^(4/3)·B_T^(2/3)·sin^(8/3)(θc/2), with B_T = √(By² + Bz²) in GSM. Sources: Frontiers 10.3389/fspas.2022.990789 and the chaosmagpy documentation.
+- **Clock angle:** the sources write it as arccos(Bz/B_T) or as arctan(By/Bz). orbitlife uses arccos(Bz/B_T) ∈ [0, π], which equals atan2(|By|, Bz). sin(θc/2) does not depend on the sign of By.
+- **Units:** v in km/s and B in nT, with no 10⁻³ factor. chaosmagpy multiplies by 10⁻³, a library convention.
+- **Kp correlation:** not found.
+
+### Threshold-weighted CRPS (`allen2023transformed`, `gneiting2011comparing`)
+- **[direct, arXiv preprint]** Allen, Ginsbourger & Ziegel (arXiv 2202.12732):
+  - §2.1 Eq. (6): twCRPS(F, y; ν) = ∫(F(z) − 1{y ≤ z})² dν(z).
+  - Proposition 1, Eq. (7): twCRPS = E|v(X) − v(y)| − ½E|v(X) − v(X′)|, with v(x) − v(x′) = ν([x′, x)).
+  - For the weight 1{z ≥ t}, v(z) = max(z, t).
+- **Main-agent inference** (not stated in the paper): v is non-decreasing, so v applied to the quantiles gives the quantiles of v(F). twCRPS can therefore be computed from quantile forecasts with the usual pinball estimator.
+- Gneiting & Ranjan 2011: paywalled; equation number not verified.
+
+### Kyoto Dst coverage (`kyoto_dst_index_2026`) [direct, 2026-10-08]
+- Final: 1957–2020.
+- Provisional: 2021-01 → 2026-07. All 24 months of 2024–2025 are listed; the month pages were not opened.
+- Real-time (quicklook) only: from 2026-08.

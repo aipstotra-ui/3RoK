@@ -127,6 +127,37 @@ def noaa_3day_kp(issue_utc: str, block_start_utc: str) -> float:
 
 def noaa_baseline_kp(issue_time_utc: str, block_start_utc: str) -> float:
     """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min, converted to exact thirds."""
+
+
+def crps_from_quantiles(
+    quantiles: Sequence[float], levels: Literal["inner19"], observation: float
+) -> float:
+    """CRPS as 2 x mean pinball loss over the 19 inner levels 0.05..0.95 (protocol section 5). Quantiles are sorted first."""
+
+
+def twcrps_from_quantiles(
+    quantiles: Sequence[float],
+    levels: Literal["inner19"],
+    observation: float,
+    threshold: float,
+    tail: Literal["upper", "lower"],
+) -> float:
+    """Threshold-weighted CRPS: project quantiles and observation with max(., t) (upper) or min(., t) (lower), then CRPS."""
+
+
+def obrien_mcpherron_dst_nT(
+    dst0_nT: float,
+    pdyn_nPa: float,
+    vbs_mV_m: float,
+    hours: float,
+    integration: Literal["analytic_constant_driver"],
+    ec_mV_m: float = 0.49,
+) -> float:
+    """Dst after `hours` with a constant driver (O'Brien & McPherron 2000; constants partly UNVERIFIED)."""
+
+
+def newell_coupling(v_km_s: float, by_gsm_nT: float, bz_gsm_nT: float) -> float:
+    """Newell et al. 2007 dPhi_MP/dt in (km/s)^(4/3) nT^(2/3); theta_c = arccos(Bz / B_T), no 1e-3 factor."""
 ```
 
 ```python

@@ -1,0 +1,23 @@
+id: forecast-newell-coupling-southward
+title: Newell coupling for a purely southward IMF
+module: forecast
+check: implementation
+target: orbitlife.forecast.newell_coupling
+inputs:
+  v_km_s: 400.0
+  by_gsm_nT: 0.0
+  bz_gsm_nT: -5.0
+quantity: dPhi_MP/dt in native units (km/s)^(4/3) nT^(2/3), no 1e-3 factor
+unit: (km/s)^(4/3) nT^(2/3)
+reference:
+  value: 8617.74
+  source: newell2007universal
+  locator: Coupling v^(4/3) B_T^(2/3) sin^(8/3)(theta_c/2), B_T = sqrt(By^2 + Bz^2) GSM, theta_c = arccos(Bz/B_T);
+    from secondary sources
+  status: UNVERIFIED
+  computed_with: 'theta_c = pi, sin(pi/2) = 1: 400^(4/3) * 5^(2/3) = 8617.739'
+tolerance:
+  kind: rel
+  value: 1.0e-06
+  rationale: Closed-form arithmetic.
+notes: Units and normalisation stated explicitly because libraries differ (chaosmagpy multiplies by 1e-3).
