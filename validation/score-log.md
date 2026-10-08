@@ -7,5 +7,5 @@ Every evaluation on a held-out **test** set is recorded here, append-only. The h
 
 ## Replays (not scores; validation/forecast-protocol.md §7)
 
-| Date (UTC) | Event | Artifact sha256 | Commit |
-|---|---|---|---|
+| Date (UTC) | Event | Artifact sha256 | Protocol commit | Outputs file | Commit |
+|---|---|---|---|---|---|

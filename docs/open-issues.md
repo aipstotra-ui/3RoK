@@ -71,7 +71,13 @@ Known gaps that are deliberately deferred. Each one names its source and the pha
 - **SWPC 2012–13 G1+ contingency counts** are in an image (not re-checked).
 - **Protocol `assumption` latencies** (validation/forecast-protocol.md §3): RTSW 1 h, GFZ nowcast Kp (exclude the newest block), Kyoto quicklook Dst 2 h. Each must be replaced with a sourced value before training.
 - **Archived real-time inputs** (RTSW, nowcast Kp, quicklook Dst) for 2022–2025: find a source, or the headline result must be labelled "definitive-input hindcast" (protocol §3.1).
-- **Physics-baseline constants are partly UNVERIFIED** (protocol v2 §4.5): the O'Brien & McPherron injection slope 4.4 and Ec (0.49 vs 0.5 mV/m), the Bs convention, and the Newell coupling formula and units. The publishers' pages block automated readers, so **Aiden needs to download two free PDFs** (JGR 105, 7707, doi 10.1029/1998JA000437; JGR 112, A01206, doi 10.1029/2006JA012015) into a local folder outside git. The 4 cases that depend on them report PASS_UNVERIFIED_REF until then.
+- **Physics-baseline constants are partly UNVERIFIED** (protocol v2 §4.5): the O'Brien & McPherron injection slope 4.4 and Ec (0.49 vs 0.5 mV/m), the Bs convention, and the Newell coupling formula and units. The publishers' pages block automated readers, so **Aiden needs to download two free PDFs** (JGR 105, 7707, doi 10.1029/1998JA000437; JGR 112, A01206, doi 10.1029/2006JA012015) into a local folder outside git. The 8 cases that depend on them (2 O'Brien-McPherron, 4 Newell, 2 VBs) report PASS_UNVERIFIED_REF until then.
+- **Protocol v2 `assumption` and UNVERIFIED items** (validation/forecast-protocol.md §3.6, §4.5, §5), each to be sourced or kept as a labelled design choice:
+  - maximum driver age 3 h; maximum start-state age 6 h; the Newell 2-of-3-slots rule; the 3-hour Newell window
+  - the square-root mapping in the Newell Kp baseline (no published Kp regression found)
+  - the too-few-events limits (10 events, 3 episodes)
+  - the OMNI flow-pressure formula (alpha term) and whether it matches the P that O'Brien & McPherron fitted
+  - V as bulk speed vs |Vx| in VBs
 - **NOAA reader cases still to add:** a missing file and an amended (reissued) forecast. No real examples found yet.
 
 ## Phase 1 exit gaps (validation-analyst, 2026-10-06)
