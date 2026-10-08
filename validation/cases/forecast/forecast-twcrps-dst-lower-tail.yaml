@@ -4,7 +4,7 @@ module: forecast
 check: implementation
 target: orbitlife.forecast.twcrps_from_quantiles
 inputs:
-  quantiles:
+  quantiles_21:
   - -30.0
   - -30.0
   - -30.0
@@ -24,7 +24,8 @@ inputs:
   - -30.0
   - -30.0
   - -30.0
-  levels: inner19
+  - -30.0
+  - -30.0
   observation: -120.0
   threshold: -50.0
   tail: lower
@@ -33,8 +34,8 @@ unit: nT
 reference:
   value: 70.0
   source: allen2023transformed
-  locator: 'arXiv 2202.12732 (preprint), Section 2.1: Eq. (6) twCRPS; Proposition 1, Eq. (7): twCRPS = E|v(X) -
-    v(y)| - 1/2 E|v(X) - v(X'')|; lower tail by symmetry: v(z) = min(z, t)'
+  locator: arXiv 2202.12732 (preprint), Section 2.1, Eq. (6) with nu = Lebesgue measure on (-inf, t]; its chaining
+    function (Proposition 1, Eq. (7)) is v(z) = min(z, t)
   status: CONFIRMED
   computed_with: '|min(-30, -50) - min(-120, -50)| = |-50 + 120| = 70; using the upper-tail max would give 0'
 tolerance:

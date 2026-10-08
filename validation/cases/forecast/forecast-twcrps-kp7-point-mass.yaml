@@ -4,7 +4,7 @@ module: forecast
 check: implementation
 target: orbitlife.forecast.twcrps_from_quantiles
 inputs:
-  quantiles:
+  quantiles_21:
   - 6.0
   - 6.0
   - 6.0
@@ -24,7 +24,8 @@ inputs:
   - 6.0
   - 6.0
   - 6.0
-  levels: inner19
+  - 6.0
+  - 6.0
   observation: 8.0
   threshold: 7.0
   tail: upper

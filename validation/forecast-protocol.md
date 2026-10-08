@@ -49,15 +49,15 @@ Every input is defined by its **availability time** (when that version of the va
    - Kyoto **quicklook** Dst
 
    If archived real-time data cannot be obtained for training and test, the headline result is labelled **"definitive-input hindcast"**. In that case a **degraded-input sensitivity run** is mandatory (quicklook-like Dst, nowcast-like Kp, RTSW-like gaps and noise), and **no claim of operational superiority over NOAA** may be made from definitive-input scores.
-2. **Solar wind.** Live RTSW is time-shifted with **the same method OMNI uses** (`omniweb_data_doc`, "magnetosphere-arrival times"), so training and serving inputs agree. Features then use shifted times ≤ T − 1 h, because OMNI rows cover [t, t + 1 h).
-   - Formula: **availability time = shifted row end + RTSW latency**, and a row is usable if its availability time ≤ T.
+2. **Solar wind.** Live RTSW is time-shifted with **the same method OMNI uses** (`omniweb_data_doc`, "magnetosphere-arrival times"), so training and serving inputs agree.
+   - An OMNI row covers [t, t + 1 h) in shifted time. Its **availability time = t + 1 h + RTSW latency**, and the row is usable only if its availability time ≤ T. With the 1 h assumption below, the newest usable row is [T − 2 h, T − 1 h).
    - The RTSW latency is UNVERIFIED; `assumption` until sourced: 1 h.
 3. **Kp.** Only blocks whose nowcast was **published** before T. GFZ nowcast latency is UNVERIFIED; `assumption` until sourced: exclude the most recent completed block, so the newest usable block ends at T − 3 h.
 4. **Dst.** Only hours whose real-time value was published before T. Kyoto quicklook latency is UNVERIFIED; `assumption` until sourced: 2 h.
 5. **Leakage property test** (required before any score):
    - (a) Hypothesis perturbs every record whose **availability time > T**; all features at T must be unchanged.
    - (b) Explicit boundary cases: changing the record whose availability time is exactly T must not change features, and changing the newest record available before T **must** change them (a non-vacuity check).
-   - (c) The same test applies to every baseline builder (persistence, recurrence, climatology).
+   - (c) The same test applies to every baseline builder: persistence, recurrence, climatology, the O'Brien–McPherron start state and drivers, the Newell window (§4.5), and the NOAA issue selector (§4.4).
 
 ## 4. Baselines (scored on the same issue times and the same inputs rules)
 1. **Persistence:** the latest value available at T (§3.3 and §3.4).
@@ -68,31 +68,52 @@ Every input is defined by its **availability time** (when that version of the va
    - **Issue selection:** use the header `:Issued:` time, and the newest (amended) issue at or before T + 30 min.
    - **Missing NOAA file:** that T is dropped from *every* model's NOAA comparison, so all models share one common sample. The number of dropped T is reported.
    - NOAA's two-decimal values are converted to exact thirds: round(3x)/3.
-5. **Physics baselines** (one per target). Both use only inputs available at T under §3, and neither is tuned on early stop, calibration or test.
+5. **Physics baselines** (one per target). Both use only inputs available at T under §3. Neither is fitted on early stop, calibration or test (the shared steps in §4.7 and §5 apply to them as to every forecast).
    - **Dst: O'Brien & McPherron 2000** (`obrien2000ring`), with published constants and **no refit**:
-     - Dst* = Dst − 7.26·√P + 11 nT (P in nPa); dDst*/dt = Q − Dst*/τ
-     - Q = −4.4·(VBs − Ec) nT/h for VBs > Ec, else 0, with Ec = 0.49 mV/m
-     - τ = 2.40·exp[9.74/(4.69 + VBs)] h
-     - **Start state:** the newest quicklook Dst available at T (§3.4).
-     - **Driver ("frozen driver"):** P and VBs from the newest usable OMNI-shifted hour (§3.2), held constant to T + h. VBs = V·Bs·10⁻³ mV/m, with V the bulk speed in km/s and Bs = −Bz(GSM) in nT when Bz < 0, else 0. Integration uses the exact solution for a constant driver, one step to T + h.
-     - The slope 4.4, Ec and the VBs definition are **UNVERIFIED** (secondary sources; docs/research/phase1-forecast.md). Ec = 0.5 is reported as a sensitivity run. The model was fitted for Dst > −150 nT; hours below that are still scored, and their count is reported.
-   - **Kp: Newell et al. 2007 coupling** (`newell2007universal`):
-     - dΦ/dt = v^(4/3)·B_T^(2/3)·sin^(8/3)(θc/2), with v in km/s, B_T = √(By² + Bz²) GSM in nT, and θc = arccos(Bz/B_T). Formula UNVERIFIED (secondary sources).
-     - **Feature:** the mean of dΦ/dt over the 3 newest usable OMNI-shifted hours (§3.2). `assumption`: the 3-hour window matches the Kp block length.
-     - **Model:** linear quantile regression of Kp(T + h) on that single feature, per horizon and per quantile level (all 21), fitted on **train only**. The physics fixes the input; only the straight-line mapping is fitted.
+     - Dst* = Dst − 7.26·√P + 11 nT, with P the solar-wind dynamic pressure in nPa; dDst*/dt = Q − Dst*/τ.
+     - Q = −4.4 nT h⁻¹ (mV/m)⁻¹ × (VBs − Ec) for VBs > Ec, else 0, with Ec = 0.49 mV/m.
+     - τ = 2.40·exp[9.74/(4.69 + VBs)] h.
+     - **Inputs:**
+       - VBs = V·Bs·10⁻³ mV/m, with V the bulk flow speed in km/s and Bs = −Bz(GSM) in nT when Bz < 0, else 0.
+       - P is the OMNI hourly "flow pressure" field. For live RTSW it is computed with the formula OMNI documents (`omniweb_data_doc`; UNVERIFIED until read; the alpha-particle term matters at the ~20% level).
+     - **Time convention.** Every hourly value (Dst, P, VBs) is an average over [t, t + 1 h) and is labelled by its hour end t + 1 h.
+       - The start state is the newest quicklook Dst hour available at T (§3.4), ending at t_s (t_s ≤ T − 2 h under the latency assumption).
+       - The target is the Dst hour ending at T + h (§1), so the model runs for **Δt = (T + h) − t_s** hours. For example, h = 1 h and t_s = T − 2 h give a 3 h run.
+     - **Drivers.** Observed hourly drivers are used hour by hour from t_s up to the newest usable OMNI-shifted hour (§3.2). The last one is then held constant ("frozen driver") to T + h.
+       - Each hour uses the exact solution for a constant driver: Dst*(t + Δ) = Qτ + (Dst*(t) − Qτ)·e^(−Δ/τ).
+       - Dst is converted to Dst* with the P of the start hour, and Dst* back to Dst with the frozen P.
+     - **Missing or stale input.** Fallback to the dressed persistence forecast for that T if any of these holds:
+       - the start Dst is missing;
+       - any driver hour between t_s and the newest usable hour is missing;
+       - the newest usable driver hour ends more than 3 h before T − 1 h (`assumption`: maximum driver age 3 h).
+
+       The fallback keeps the sample paired with every other model. The count is reported, and scores excluding those T are a sensitivity result.
+     - **Applicability flag `obrien_out_of_fit_range`:** the start Dst* or the forecast Dst* is below −150 nT, the fitted range in the abstract. Scores are reported with and without flagged hours.
+     - **UNVERIFIED** (secondary sources; docs/research/phase1-forecast.md): the slope 4.4, Ec, the Bs convention, and V as bulk speed rather than |Vx|. Ec = 0.5 is reported as a sensitivity run.
+   - **Kp: physics-informed baseline using the Newell et al. 2007 coupling** (`newell2007universal`):
+     - dΦ/dt = v^(4/3)·B_T^(2/3)·sin^(8/3)(θc/2), with v in km/s, B_T = √(By² + Bz²) GSM in nT, and θc = atan2(|By|, Bz) ∈ [0, π] (equal to arccos(Bz/B_T)). dΦ/dt = 0 when B_T = 0. Formula UNVERIFIED (secondary sources).
+     - **Feature:** dΦ/dt computed from each hourly OMNI-shifted row (not from higher-cadence data), averaged over the 3 newest usable rows (§3.2). At least 2 of the 3 rows must be valid; otherwise the fallback is dressed persistence, and the count is reported. `assumption`: the 3-hour window matches the Kp block length.
+     - **Model:** linear quantile regression of Kp(T + h) on **(dΦ/dt)^½**, per horizon and quantile level (all 21), fitted on **train only**.
+       - `assumption`: the square root is chosen because Kp is quasi-logarithmic and dΦ/dt is heavy-tailed. No Kp regression is published in the sources read.
+       - The coupling form is published; the mapping to Kp is our design. So this is a *physics-informed* baseline, not published physics.
    - Both are scored exactly like the other baselines (§5), including the NOAA common sample.
 6. **Distributions for point baselines.** Point baselines (including O'Brien–McPherron) are turned into distributions with empirical error quantiles per horizon, at all 21 levels:
-   - persistence, recurrence, O'Brien–McPherron: errors from train
+   - **Error definition:** e = y − ŷ. The forecast quantile is q_τ = ŷ + Q_τ(e), where Q_τ is the empirical quantile with linear interpolation (Hyndman–Fan type 7).
+   - persistence, recurrence, O'Brien–McPherron: errors from train, computed under the **same input regime as the scored forecast** (§3.1). If train lacks archived real-time inputs, the definitive-input label and the degraded-input run apply to the baselines exactly as to the model.
    - NOAA: errors from leave-one-month-out within the test period (this only helps NOAA)
+7. **Equal calibration.** The conformal calibration step on the calibration split (§2) is applied identically to our model and to every distributional baseline except NOAA, so no comparison favours the model through calibration alone.
 
    Undressed (point) scores are kept as a secondary result.
 
 ## 5. Metrics
+- **Sorting:** all 21 quantiles are sorted together first. The inner 19 are then taken from the sorted set.
 - **CRPS:** 2 × mean pinball loss over the 19 inner levels, for every forecast including the baselines.
 - **Threshold-weighted CRPS (twCRPS)**, the storm-focused score (`allen2023transformed`, Proposition 1; `gneiting2011comparing`):
   - Kp thresholds t = 5.0 and 7.0 use the upper-tail projection v(z) = max(z, t). Dst thresholds t = −50 and −100 nT use the lower-tail projection v(z) = min(z, t).
   - **Computation:** apply v to each sorted inner quantile and to the observation, then use the CRPS estimator above. v is non-decreasing, so the projected quantiles are quantiles of the projected forecast.
+  - Dst lower tail: this is Eq. (6) of `allen2023transformed` with ν the Lebesgue measure on (−∞, t], whose chaining function is min(z, t).
   - It ignores errors that stay entirely on the quiet side of t. It is reported per horizon with skill against every baseline, as a **secondary** result (CRPS stays the headline).
+  - **Known limitation at Kp ≥ 7:** a forecast whose q0.95 < 7 has every projected inner quantile equal to 7, so its twCRPS is (y − 7)⁺ whatever the forecast. When that holds for ≥ 95% of issues, the Kp ≥ 7 twCRPS is labelled uninformative. The tail measures there are the 0.99 pinball loss and the Kp ≥ 7 Brier score.
 - **Interval coverage:** half-open central interval **[q0.10, q0.90)**. For the discrete Kp grid, a randomised PIT is also reported.
   - **Pass rule:** the point estimate lies in 0.78–0.82, with the bootstrap CI reported.
   - Storm-only coverage uses Kp ≥ 5.0 (5o and above) and Dst ≤ −50 nT.
@@ -103,9 +124,15 @@ Every input is defined by its **availability time** (when that version of the va
   - Event probability is read from the forecast CDF, built by linear interpolation between sorted quantiles.
   - Tails: F(x) = 0.01 for x < q0.01 and F(x) = 0.99 for x > q0.99. That puts a 1% floor on tail-event probabilities (v1 had 5%, which made every Kp ≥ 7 probability at least 5%), and the same rule applies to every model.
   - The **decision threshold** for POD, FAR, CSI and HSS is fixed on the **early-stop slice** (the value that maximises HSS there) and then frozen.
+    - This applies **identically to every forecast**: our model, persistence, recurrence, climatology, both physics baselines and NOAA. NOAA has no early-stop forecasts in the archive, so it uses a probability threshold of 0.5. Its result is also reported with the threshold that maximises HSS on test, which only helps NOAA.
+    - Choosing this threshold is not "fitting" in the §4.5 sense.
   - The Brier score uses the probability directly.
   - Event counts are always reported next to the scores.
-  - **Too few events.** An event score (and a twCRPS at that threshold) based on fewer than **10 test events** is labelled "too few events to be informative" and shown with its bootstrap CI, never as a skill claim. An event is a scored target block (Kp) or hour (Dst) at or beyond the threshold, counted per horizon. `assumption`: 10 is a design choice made before any test target was examined.
+  - **Too few events.** An event score (and a twCRPS at that threshold) is labelled "too few events to be informative" if it rests on fewer than **10 events** or fewer than **3 independent storm episodes**. Such a score is shown with its bootstrap CI, never as a skill claim.
+    - An event is a scored target block (Kp), hour (Dst) or UT day (daily-maximum Kp) at or beyond the threshold.
+    - An episode is a run of events separated from the next by at least 24 h.
+    - Both are counted per horizon, on the exact sample of each comparison (after the Dst-missing and NOAA-common-sample drops).
+    - `assumption`: 10 and 3 are design choices made before any test target was examined.
 - **Skill:** 1 − mean(S_model) / mean(S_baseline).
 - **Uncertainty:** paired moving-block bootstrap with 1-month blocks and B = 2000, with identical resamples for the model and each baseline. Report 3 significant figures.
 - **Daily maximum Kp** (for SWPC-style comparison):
@@ -117,14 +144,16 @@ Every input is defined by its **availability time** (when that version of the va
 - The test split is scored **once for headline purposes** per (target, test split), in total, not once per model version. Kp and Dst have separate headlines.
 - A **look** is any computation that combines a candidate model's output with test-period targets, including partial scoring, storm plots, and debugging on test targets.
 - Every later evaluation on test is a logged **"test reused (look n)"** with a running count. It may be reported, but it can never be the headline.
-- Each `validation/score-log.md` row records: date, model, protocol commit hash, look number, model artifact sha256 (the ONNX file), metrics file, and commit.
+- Each `validation/score-log.md` row records: date, model, version, test set, protocol commit hash, look number, model artifact sha256 (the ONNX file), truth sha256 (Kp and Dst files, §1), input manifest sha256 (the archived input snapshots, since quicklook files are overwritten), metrics file, and commit.
 - **Parity:** only the scored artifact (by sha256) may ship. TypeScript features must match Python golden fixtures built from **live-format inputs** (RTSW, nowcast Kp, quicklook Dst).
 
 ## 7. February 2022 storm replay (not a score)
 On 2022-02-03/04 a moderate storm raised drag enough to destroy most of a fresh Starlink batch (the `drag-starlink-g47-*` cases). The replay shows how a frozen model behaves on that event.
 - **Window:** issue times every 3 h from 2022-01-29 00:00 to 2022-02-08 21:00 UT. That lies inside the unused January–February 2022 gap (§2) and clear of both purges, so it is **not** test data and not a look.
-- **Frozen model:** the replay is run once, with the same artifact (sha256) as the headline. It may never be used for model selection, tuning or calibration.
-- **Output:** per-issue quantile fans for Kp and Dst at each horizon, the truth, persistence, both physics baselines and the NOAA issues. Per-block errors may be listed, but no aggregate score or skill is computed from it.
+- **No development use.** January–February 2022 is never used for development, including exploratory analysis.
+- **Frozen model:** the replay runs only after the headline artifact's sha256 is in the score log, and with that same artifact. It may never be used for model selection, tuning or calibration. Every replay run is logged in the score log's "Replays" table (date, artifact sha256, commit).
+- **Output:** per-issue quantile fans for Kp and Dst at each horizon, with the truth, persistence and both physics baselines. Per-block errors may be listed, but no aggregate score or skill is computed from it.
+  - NOAA issues are included only if a pre-2022-03 archive is sourced. The cited archive starts in 2022-03, and earlier coverage is UNVERIFIED.
 - **Truth for the window** follows §1 (February 2022 Dst is provisional).
 
 ## 8. Published context (not pass/fail)
@@ -137,6 +166,8 @@ On 2022-02-03/04 a moderate storm raised drag enough to destroy most of a fresh 
 | Tail quantiles 0.01 and 0.99 (21 levels); tail floor 5% → 1%; tail coverage and tail pinball reported | §1, §5 | v1's 5% floor made Kp ≥ 7 scores uninformative |
 | Threshold-weighted CRPS at the event thresholds | §5 | Storm-focused score; plain CRPS is dominated by quiet times |
 | "Too few events" rule (< 10 test events) | §5 | Stops a skill claim resting on a handful of storms |
-| Physics baselines: O'Brien–McPherron (Dst), Newell coupling (Kp) | §4.5 | Beating persistence is easy; beating published physics is the real test |
+| Physics baselines: O'Brien–McPherron (Dst, published constants), Newell-coupling quantile regression (Kp, physics-informed) | §4.5 | Beating persistence is easy; a physics-based reference is a harder test |
+| Equal calibration and identical event thresholds for every forecast | §4.7, §5 | No comparison favours the model through procedure alone |
+| Score log records truth and input-manifest sha256 | §6 | Provisional and quicklook files change over time |
 | Kyoto coverage checked; truth frozen and hashed at first look | §1 | The whole test split is provisional Dst |
 | February 2022 storm replay | §7 | Shows the Starlink G4-7 storm without spending a test look |

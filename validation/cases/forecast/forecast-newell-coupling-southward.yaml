@@ -12,8 +12,8 @@ unit: (km/s)^(4/3) nT^(2/3)
 reference:
   value: 8617.74
   source: newell2007universal
-  locator: Coupling v^(4/3) B_T^(2/3) sin^(8/3)(theta_c/2), B_T = sqrt(By^2 + Bz^2) GSM, theta_c = arccos(Bz/B_T);
-    from secondary sources
+  locator: Coupling v^(4/3) B_T^(2/3) sin^(8/3)(theta_c/2), B_T = sqrt(By^2 + Bz^2) GSM, theta_c = atan2(|By|, Bz)
+    = arccos(Bz/B_T); from secondary sources
   status: UNVERIFIED
   computed_with: 'theta_c = pi, sin(pi/2) = 1: 400^(4/3) * 5^(2/3) = 8617.739'
 tolerance:

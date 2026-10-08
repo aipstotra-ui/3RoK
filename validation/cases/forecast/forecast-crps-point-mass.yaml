@@ -4,7 +4,7 @@ module: forecast
 check: implementation
 target: orbitlife.forecast.crps_from_quantiles
 inputs:
-  quantiles:
+  quantiles_21:
   - 4.0
   - 4.0
   - 4.0
@@ -24,9 +24,10 @@ inputs:
   - 4.0
   - 4.0
   - 4.0
-  levels: inner19
+  - 4.0
+  - 4.0
   observation: 5.0
-quantity: CRPS (2 x mean pinball loss over the 19 levels 0.05..0.95)
+quantity: CRPS (2 x mean pinball loss over the 19 inner levels 0.05..0.95, after sorting all 21)
 unit: Kp
 reference:
   value: 1.0

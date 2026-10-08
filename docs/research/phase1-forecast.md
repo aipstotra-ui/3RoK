@@ -76,6 +76,7 @@ The publisher pages for the JGR and JBES papers returned HTTP 403 to the researc
   - dDst*/dt = Q − Dst*/τ; Q = −4.4·(VBs − Ec) nT/h, with Ec = 0.49 mV/m.
   - One secondary source (arXiv 1903.08466, Eq. 7) writes 0.5 instead. Protocol v2 uses 0.49 and reports 0.5 as a sensitivity run.
   - Bs as −Bz(GSM) for Bz < 0 is the usual convention; not seen in the source.
+  - V as bulk flow speed rather than |Vx|: not seen in the source. The difference is usually a few percent.
 - DOI correction: 10.1029/**1998**JA000437 (not 1999).
 
 ### Burton, McPherron & Russell 1975 (`burton1975empirical`)
@@ -85,7 +86,7 @@ The publisher pages for the JGR and JBES papers returned HTTP 403 to the researc
 ### Newell et al. 2007 (`newell2007universal`), Kp physics baseline
 - **UNVERIFIED (secondary only):** dΦMP/dt = v^(4/3)·B_T^(2/3)·sin^(8/3)(θc/2), with B_T = √(By² + Bz²) in GSM. Sources: Frontiers 10.3389/fspas.2022.990789 and the chaosmagpy documentation.
 - **Clock angle:** the sources write it as arccos(Bz/B_T) or as arctan(By/Bz). orbitlife uses arccos(Bz/B_T) ∈ [0, π], which equals atan2(|By|, Bz). sin(θc/2) does not depend on the sign of By.
-- **Units:** v in km/s and B in nT, with no 10⁻³ factor. chaosmagpy multiplies by 10⁻³, a library convention.
+- **Units (UNVERIFIED, same secondary sources):** v in km/s and B in nT, with no 10⁻³ factor. chaosmagpy multiplies by 10⁻³, a library convention. The scale does not affect the Kp baseline, which is a regression on the feature.
 - **Kp correlation:** not found.
 
 ### Threshold-weighted CRPS (`allen2023transformed`, `gneiting2011comparing`)

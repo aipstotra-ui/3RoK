@@ -129,20 +129,20 @@ def noaa_baseline_kp(issue_time_utc: str, block_start_utc: str) -> float:
     """NOAA baseline for our forecast issued at T (protocol section 4.4): newest issue at or before T + 30 min, converted to exact thirds."""
 
 
-def crps_from_quantiles(
-    quantiles: Sequence[float], levels: Literal["inner19"], observation: float
-) -> float:
-    """CRPS as 2 x mean pinball loss over the 19 inner levels 0.05..0.95 (protocol section 5). Quantiles are sorted first."""
+def crps_from_quantiles(quantiles_21: Sequence[float], observation: float) -> float:
+    """CRPS as 2 x mean pinball loss over the 19 inner levels 0.05..0.95 (protocol section 5).
+
+    Takes all 21 quantiles (0.01, 0.05 ... 0.95, 0.99), sorts them together, then uses the inner 19.
+    """
 
 
 def twcrps_from_quantiles(
-    quantiles: Sequence[float],
-    levels: Literal["inner19"],
+    quantiles_21: Sequence[float],
     observation: float,
     threshold: float,
     tail: Literal["upper", "lower"],
 ) -> float:
-    """Threshold-weighted CRPS: project quantiles and observation with max(., t) (upper) or min(., t) (lower), then CRPS."""
+    """Threshold-weighted CRPS: sort all 21, project the inner 19 and the observation with max(., t) (upper) or min(., t) (lower), then CRPS."""
 
 
 def obrien_mcpherron_dst_nT(
@@ -157,7 +157,17 @@ def obrien_mcpherron_dst_nT(
 
 
 def newell_coupling(v_km_s: float, by_gsm_nT: float, bz_gsm_nT: float) -> float:
-    """Newell et al. 2007 dPhi_MP/dt in (km/s)^(4/3) nT^(2/3); theta_c = arccos(Bz / B_T), no 1e-3 factor."""
+    """Newell et al. 2007 dPhi_MP/dt in (km/s)^(4/3) nT^(2/3); theta_c = atan2(|By|, Bz), 0 when B_T = 0, no 1e-3 factor."""
+
+
+def vbs_mV_m(v_km_s: float, bz_gsm_nT: float) -> float:
+    """V * Bs * 1e-3 in mV/m, with Bs = -Bz (GSM) when Bz < 0, else 0. V is the bulk flow speed."""
+
+
+def obrien_mcpherron_run_hours(
+    issue_time_utc: str, horizon_h: float, start_state_hour_end_utc: str
+) -> float:
+    """Run length (T + h) - t_s in hours, both as hour ends (protocol section 4.5 time convention)."""
 ```
 
 ```python
@@ -223,7 +233,7 @@ ranked: ol.RankResult = ol.rank(
 )  # Pareto front plus weighted score
 
 fc: ol.ForecastBundle = ol.forecast(issue_time_utc="now", horizons_h=[3, 6, 12, 24])
-fc.kp.quantiles  # 0.05 ... 0.95 per horizon
+fc.kp.quantiles  # 21 levels: 0.01, 0.05 ... 0.95, 0.99 per horizon
 fc.dst.quantiles
 
 action: ol.Decision = ol.decide(

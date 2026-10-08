@@ -23,5 +23,5 @@ tolerance:
   kind: abs
   value: 0.001
   rationale: Closed-form arithmetic; 0.001 nT is rounding of the stored value only.
-notes: 'UNVERIFIED until the paper body is read: the slope 4.4 and threshold Ec = 0.49 mV/m (one secondary source
-  gives 0.5, which would give -54.4912 + 0.08 nT here).'
+notes: 'UNVERIFIED until the paper body is read: the slope 4.4 and threshold Ec = 0.49 mV/m. One secondary source
+  gives Ec = 0.5, which gives -54.4497 nT here (+0.042 nT).'

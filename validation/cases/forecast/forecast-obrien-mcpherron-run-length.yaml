@@ -1,0 +1,22 @@
+id: forecast-obrien-mcpherron-run-length
+title: 'O''Brien-McPherron baseline run length: h = 1 h with a 2 h-old start state runs 3 h'
+module: forecast
+check: implementation
+target: orbitlife.forecast.obrien_mcpherron_run_hours
+inputs:
+  issue_time_utc: '2025-10-01T00:00:00Z'
+  horizon_h: 1
+  start_state_hour_end_utc: '2025-09-30T22:00:00Z'
+quantity: Delta t = (T + h) - t_s, both as hour ends
+unit: h
+reference:
+  value: 3.0
+  source: orbitlife_forecast_protocol_v2
+  locator: validation/forecast-protocol.md section 4.5, 'Time convention'
+  status: CONFIRMED
+  computed_with: (2025-10-01T01:00Z) - (2025-09-30T22:00Z) = 3 h
+tolerance:
+  kind: abs
+  value: 1.0e-09
+  rationale: Exact; running 1 h instead shifts the baseline by ~7.5 nT in the one-hour case.
+notes: Pins the time rule so the baseline cannot be run for h hours by mistake (physics review of E5).
